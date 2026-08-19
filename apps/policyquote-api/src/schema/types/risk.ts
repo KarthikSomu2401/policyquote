@@ -1,4 +1,4 @@
-import type { Condition } from './condition.schema';
+import type { Condition } from './condition';
 
 export type RiskBandName = 'STANDARD' | 'ELEVATED' | 'HIGH_RISK';
 

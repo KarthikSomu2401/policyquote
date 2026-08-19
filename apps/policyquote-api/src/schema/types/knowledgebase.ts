@@ -1,4 +1,4 @@
-import type { RiskBand, RiskBandName, RiskFactor } from './risk.schema';
+import type { RiskBand, RiskBandName, RiskFactor } from './risk';
 
 export interface KnowledgeBase {
   version: string;

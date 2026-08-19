@@ -1,8 +1,5 @@
-import type { QuoteInput } from '../schema/quote-request.schema';
-import type {
-  Condition,
-  ConditionOperator,
-} from '../schema/condition.schema';
+import type { QuoteInput } from '../schema/types/quote-request';
+import type { Condition, ConditionOperator } from '../schema/types/condition';
 
 export type ConditionEvaluator = (
   actualValue: unknown,

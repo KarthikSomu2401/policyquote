@@ -872,3 +872,102 @@ Make condition shapes explicit and reusable while preventing arbitrary risk-band
 ### Notes
 
 No evaluator or risk-engine behavior changed.
+
+## 2026-08-19 18:53:29 UTC — Consolidate risk evaluator tests
+
+### Prompt given
+
+> i do see 2 evaluator.spec.ts and risk-evaluator.spec.ts. combine them into risk-evaluator.spec.ts
+
+### Output received
+
+Confirmed both evaluator test files contained the same coverage and removed the duplicate `evaluator.spec.ts`, leaving `risk-evaluator.spec.ts` as the single evaluator test file.
+
+### What changed
+
+- `apps/policyquote-api/src/engine/evaluator.spec.ts`: deleted duplicate test file.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Keep one canonical test file aligned with the renamed `risk-evaluator.ts` module without losing coverage.
+
+### Validation
+
+- Confirmed only `risk-evaluator.spec.ts` remains.
+- API test suite passed: 3 suites, 12 tests.
+- API test typecheck passed.
+- API lint passed.
+
+### Notes
+
+No test behavior was changed.
+
+## 2026-08-19 18:56:14 UTC — Review and complete API risk contract
+
+### Prompt given
+
+> Add generic starts_with support for a postcode factor. Add a test proving a new factor can be added through KB data without changing the evaluator or risk engine. Keep postcode logic out of application code. And finally review apps/policyquote-api. Check the Lambda handler, Zod validation, KB loading, runtime KB validation, generic evaluator, premium formula, complete response, appliedFactors, and tests for all three risk bands. Make only small fixes and update AGENT_LOG.md.
+
+### Output received
+
+Reviewed the API contract and added runtime Zod validation for the loaded KB. Added focused service coverage for all three risk bands and verified the postcode factor is applied through KB data using the generic evaluator, without postcode-specific scoring logic.
+
+### What changed
+
+- `apps/policyquote-api/src/schema/knowledgebase.schema.ts`: added the runtime Zod knowledge-base schema.
+- `apps/policyquote-api/src/kb-loader.ts`: validates parsed KB JSON with `knowledgeBaseSchema.parse`.
+- `apps/policyquote-api/src/service/quote.service.spec.ts`: added STANDARD, ELEVATED, HIGH_RISK, and KB-driven postcode factor tests; corrected the base fixture age.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Ensure the API accepts only structurally valid underwriting configuration, covers all premium bands, and keeps postcode behavior data-driven.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 3 suites, 16 tests.
+- API lint passed.
+- API build passed with `risk-kb.json` and `openapi.json` packaged.
+
+### Notes
+
+Lambda handler, Zod request validation, generic evaluator, complete quote response, applied factors, and premium formula were reviewed and remained intact. No postcode-specific scoring code was added.
+
+## 2026-08-19 18:59:16 UTC — Separate API types and Zod schemas
+
+### Prompt given
+
+> I do see knowledgebase is having condition. Also I see zod schemas are in the same file as interface or types. so create seperate folders in respective structure inside src folder and move them accordingly
+
+### Output received
+
+Separated API compile-time types from runtime Zod validators. Types now live under `src/schema/types`, and Zod schemas live under `src/schema/validation`; all API imports were updated accordingly.
+
+### What changed
+
+- `apps/policyquote-api/src/schema/types/condition.ts`: moved condition types and interfaces.
+- `apps/policyquote-api/src/schema/types/knowledgebase.ts`: moved the knowledge-base interface.
+- `apps/policyquote-api/src/schema/types/quote-request.ts`: added the quote input interface.
+- `apps/policyquote-api/src/schema/types/risk.ts`: moved risk types and interfaces.
+- `apps/policyquote-api/src/schema/validation/condition.schema.ts`: added condition Zod validation.
+- `apps/policyquote-api/src/schema/validation/knowledgebase.schema.ts`: added knowledge-base Zod validation.
+- `apps/policyquote-api/src/schema/validation/quote-request.schema.ts`: added quote request Zod validation.
+- Removed the mixed type/schema files from `apps/policyquote-api/src/schema`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Keep runtime validation concerns separate from compile-time contracts and make the API schema structure easier to navigate.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 3 suites, 16 tests.
+- API lint passed.
+- Confirmed no stale imports reference the previous mixed schema files.
+
+### Notes
+
+Runtime behavior and API contracts were preserved.

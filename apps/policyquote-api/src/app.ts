@@ -3,7 +3,7 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import openApiDocument from './assets/openapi.json';
 import { loadKnowledgeBase } from './kb-loader';
-import { quoteRequestSchema } from './schema/quote-request.schema';
+import { quoteRequestSchema } from './schema/validation/quote-request.schema';
 import { createQuote } from './service/quote.service';
 
 export function createApp() {

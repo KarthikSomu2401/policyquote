@@ -1,5 +1,5 @@
 import { loadKnowledgeBase } from '../kb-loader';
-import { QuoteInput } from '../schema/quote-request.schema';
+import type { QuoteInput } from '../schema/types/quote-request';
 import { matchesCondition } from '../engine/risk-evaluator';
 
 export function createQuote(input: QuoteInput) {

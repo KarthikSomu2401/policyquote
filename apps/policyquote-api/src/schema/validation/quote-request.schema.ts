@@ -6,7 +6,5 @@ export const quoteRequestSchema = z.object({
   age: z.number().int().min(18).max(120),
   propertyType: z.enum(['House', 'Flat', 'Bungalow']),
   previousClaims: z.number().int().nonnegative().optional(),
-  postcode: z.string().trim().min(1).optional()
+  postcode: z.string().trim().min(1).optional(),
 });
-
-export type QuoteInput = z.infer<typeof quoteRequestSchema>;
