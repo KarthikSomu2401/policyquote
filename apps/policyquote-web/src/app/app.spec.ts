@@ -16,8 +16,17 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('app-header')).not.toBeNull();
-    expect(compiled.querySelector('app-side-nav')).not.toBeNull();
     expect(compiled.querySelector('router-outlet')).not.toBeNull();
     expect(compiled.querySelector('app-footer')).not.toBeNull();
+  });
+
+  it('should configure quote, dashboard, and the root redirect routes', () => {
+    expect(appRoutes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: 'quote' }),
+        expect.objectContaining({ path: 'dashboard' }),
+        expect.objectContaining({ path: '', redirectTo: 'quote' }),
+      ]),
+    );
   });
 });

@@ -1108,3 +1108,117 @@ Provide the requested standalone application layout and routed navigation withou
 ### Notes
 
 The Jest failure is an existing test-runner compatibility issue occurring during runtime setup before test discovery.
+
+## 2026-08-19 20:05 UTC — Refactor quote page components
+
+### Prompt given
+
+> Refactor the quote page into standalone custom components: QuoteFormComponent, QuoteResultComponent and RiskBandBadgeComponent. Keep the Reactive Form in QuoteFormComponent. Use Signals for loading, quoteResult and errorMessage in the quote page container. Pass form submission and API results through typed inputs and outputs. Keep HttpClient calls in the existing quote API service. Do not add external libraries or complex styling.
+
+### Output received
+
+Refactored the quote route into standalone form, result, and risk-band badge components. Added typed quote request/result contracts, a frontend QuoteApiService as the HTTP boundary because no frontend quote API service existed, signal-backed loading/result/error state in the quote container, and focused tests for validation, submission, API success/failure, and risk-band mapping.
+
+### What changed
+
+- `apps/policyquote-web/src/app/quote-form.component.ts`: added the typed Reactive Form and `submitted` output.
+- `apps/policyquote-web/src/app/quote-result.component.ts`: added the typed result input and result rendering.
+- `apps/policyquote-web/src/app/risk-band-badge.component.ts`: added typed risk-score input and derived risk-band signal.
+- `apps/policyquote-web/src/app/quote.component.ts`: added signal state and API orchestration in the quote page container.
+- `apps/policyquote-web/src/app/quote-api.service.ts`: kept the `HttpClient` call in a dedicated API service.
+- `apps/policyquote-web/src/app/quote.types.ts`: added shared typed request/result contracts.
+- `apps/policyquote-web/src/app/app.config.ts`: registered `provideHttpClient()`.
+- `apps/policyquote-web/src/app/quote-form.component.spec.ts`: added required-field and typed-emission tests.
+- `apps/policyquote-web/src/app/quote.component.spec.ts`: added API success and failure signal tests.
+- `apps/policyquote-web/src/app/risk-band-badge.component.spec.ts`: added risk-band mapping tests.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Separate quote responsibilities into reusable standalone components while keeping form state, signal state, and HTTP access at their appropriate boundaries.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in changed implementation files.
+- `npx nx test policyquote-web --runInBand` was attempted but Jest failed before running tests with `TypeError: this._moduleMocker.clearMocksOnScope is not a function`.
+
+### Notes
+
+No external libraries or complex styling were added. The existing backend quote API response has no band name, so the badge derives `STANDARD`, `ELEVATED`, or `HIGH_RISK` from its typed risk score using the current knowledge-base thresholds.
+
+## 2026-08-19 20:06 UTC — Complete routed dashboard layout
+
+### Prompt given
+
+> Create a standalone DashboardComponent and connect all layout and quote components through the configured routes. Keep Dashboard minimal with a heading and placeholder content. Ensure /quote renders the working quote flow inside the layout and /dashboard renders the dashboard. Add only minimal component-scoped CSS for a readable responsive header, side navigation, main content and footer.
+
+### Output received
+
+Confirmed the configured routes already connect `/quote` to the working quote flow and `/dashboard` to the standalone DashboardComponent, with the root redirecting to `/quote`. Added dashboard placeholder content, responsive layout structure, and minimal component-scoped CSS for the header, side navigation, main content, and footer. Added a focused route configuration assertion.
+
+### What changed
+
+- `apps/policyquote-web/src/app/dashboard.component.ts`: added minimal placeholder content and scoped host styling.
+- `apps/policyquote-web/src/app/app.html`: added layout and main-content classes around the routed outlet.
+- `apps/policyquote-web/src/app/app.scss`: added minimal responsive layout CSS.
+- `apps/policyquote-web/src/app/app-header.component.ts`: added readable scoped header CSS.
+- `apps/policyquote-web/src/app/side-nav.component.ts`: added readable responsive scoped navigation CSS.
+- `apps/policyquote-web/src/app/app-footer.component.ts`: added scoped footer CSS.
+- `apps/policyquote-web/src/app/app.spec.ts`: added route configuration coverage.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Complete the requested routed dashboard/layout experience while preserving the existing quote flow and avoiding external styling libraries or complex design.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in changed implementation files.
+- `npx nx test policyquote-web --runInBand` was attempted but Jest failed before running tests with `TypeError: this._moduleMocker.clearMocksOnScope is not a function`.
+
+### Notes
+
+Routes were already configured correctly, so no route behavior changes were necessary.
+
+## 2026-08-19 20:12 UTC — Simplify dashboard and quote layout
+
+### Prompt given
+
+> I don't see much use for sidenav, I want you to update the dashboard with some marketing content with a button in the center to which says "Quote Now" and Update Quote To have a flex design witth simple looks
+
+### Output received
+
+Removed the side-nav from the rendered application shell and kept route access through compact Quote and Dashboard header links. Replaced the dashboard placeholder with centered marketing copy and a `Quote Now` button that navigates to the quote route, and added a simple wrapping flex layout for the quote form and result area. Preserved the user-edited absolute API URL in `quote-api.service.ts`.
+
+### What changed
+
+- `apps/policyquote-web/src/app/app.ts`: removed the side-nav from standalone root imports.
+- `apps/policyquote-web/src/app/app.html`: removed the side-nav host from the layout.
+- `apps/policyquote-web/src/app/app.scss`: changed the shell to a simple vertical flex layout.
+- `apps/policyquote-web/src/app/app-header.component.ts`: added compact Quote and Dashboard route links and flex header styling.
+- `apps/policyquote-web/src/app/dashboard.component.ts`: added centered marketing content and a `Quote Now` navigation button.
+- `apps/policyquote-web/src/app/quote.component.ts`: added simple responsive flex layout styling around the quote form and result.
+- `apps/policyquote-web/src/app/app.spec.ts`: removed the obsolete side-nav assertion.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Reduce navigation chrome and give the dashboard and quote page the requested simple, readable layout.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in changed implementation files.
+- `npx nx test policyquote-web --runInBand` was attempted but Jest failed before running tests with `TypeError: this._moduleMocker.clearMocksOnScope is not a function`.
+
+### Notes
+
+`side-nav.component.ts` remains available but is no longer rendered by the root layout. No external libraries were added.

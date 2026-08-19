@@ -6,6 +6,40 @@ import { Subject, filter, takeUntil } from 'rxjs';
   standalone: true,
   selector: 'app-side-nav',
   imports: [RouterLink],
+  styles: `
+    :host {
+      background: #f3f4f6;
+      display: block;
+      padding: 1rem;
+    }
+
+    button {
+      margin-bottom: 1rem;
+    }
+
+    nav {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    a {
+      color: #374151;
+      padding: 0.5rem;
+      text-decoration: none;
+    }
+
+    a.active,
+    a:hover {
+      background: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    @media (max-width: 640px) {
+      nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  `,
   template: `
     <button
       type="button"
