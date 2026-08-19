@@ -1687,3 +1687,38 @@ Add complete deterministic browser coverage to the existing e2e project without 
 ### Notes
 
 The repository already had `@nx/playwright/plugin` configured, so the generator updated the existing project configuration without creating or deleting an Nx project. No external UI libraries or backend dependency were added.
+
+## 2026-08-19 21:27:42 UTC — Refactor PolicyQuote E2E suite
+
+### Prompt given
+
+> Refactor the existing Playwright E2E suite for PolicyQuote. Add stable data-testid attributes to the landing page and quote form UI, then split the tests into separate landing-page.spec.ts and quote-form.spec.ts files. Create shared Playwright utilities for navigation, form completion, quote API mocking and common assertions. Keep tests deterministic, use the existing API contract, do not change business logic, and run `npx nx e2e policyquote-web-e2e` after the changes.
+
+### Output received
+
+Refactored the single PolicyQuote Playwright spec into separate landing-page and quote-form suites. Added shared navigation, form completion, API success/pending/error mocks, validation assertions, and result assertions using the existing quote request and response contract. Updated Playwright to use the Angular development server so client-side `/quote` navigation works during E2E runs.
+
+### What changed
+
+- `apps/policyquote-web-e2e/src/landing-page.spec.ts`: added landing-page content, CTA navigation, and keyboard activation tests.
+- `apps/policyquote-web-e2e/src/quote-form.spec.ts`: added validation, keyboard submission, successful result, loading, and API error tests.
+- `apps/policyquote-web-e2e/src/support/policyquote.ts`: added shared fixtures, navigation, form completion, API mocks, and common assertions.
+- `apps/policyquote-web-e2e/src/policyquote.spec.ts`: removed the monolithic suite after splitting its coverage.
+- `apps/policyquote-web-e2e/playwright.config.mts`: changed the E2E web server to `nx serve policyquote-web` for SPA route support.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Improve E2E maintainability and selector stability while keeping the tests deterministic, contract-based, and isolated from production business logic.
+
+### Validation
+
+- `npx nx e2e policyquote-web-e2e` passed: 21 tests across the configured browsers.
+- `npx nx typecheck policyquote-web-e2e` passed.
+- `npx nx lint policyquote-web-e2e` passed with no warnings or errors after adding explicit assertions for shared helper usage.
+- Editor diagnostics reported no errors in the changed Playwright files.
+- `git diff --check` passed.
+
+### Notes
+
+No application business logic, API contract, or external dependencies were changed.
