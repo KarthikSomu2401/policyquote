@@ -74,6 +74,38 @@ Place the backend application under the monorepo's `apps` directory and keep all
 
 Generated `apps/backend/dist` output was removed after validation. Existing unrelated worktree changes were preserved.
 
+## 2026-08-19 — Reset Nx daemon state after Angular app generation
+
+### Prompt given
+
+> Fix my Nx monorepo after creating an Angular app: resolve the “Daemon process terminated and closed the connection” error affecting lint, and ensure both the existing Angular and Node.js apps work. Provide minimal commands/steps to reset Nx, fix the daemon issue, and re-enable lint/build for both apps.
+
+### Output received
+
+Confirmed the Angular app (`frontend`) and Node app (`@org/backend`) are both registered with lint and build targets. The workspace already has `useDaemonProcess: false` in `nx.json`, so the minimal fix is resetting Nx state and using explicit daemon-disabled CI commands when invoking targets.
+
+### What changed
+
+- `AGENT_LOG.md`: appended this entry.
+- No application source or Nx configuration changes were required.
+
+### Why
+
+Clear stale Nx daemon/cache state after Angular generation while preserving lint and build targets for both applications.
+
+### Validation
+
+- `npx nx reset` succeeded.
+- `CI=true NX_DAEMON=false npx nx lint frontend` succeeded.
+- `CI=true NX_DAEMON=false npx nx lint @org/backend` succeeded.
+- `CI=true NX_DAEMON=false npx nx build frontend` succeeded with an existing Angular component-style budget warning.
+- `CI=true NX_DAEMON=false npx nx build @org/backend --configuration=development` succeeded.
+- Generated build output was removed afterward.
+
+### Notes
+
+Nx reported that the Angular lint executor is deprecated and recommends `nx g @nx/eslint:convert-to-inferred` for a future Nx 24 migration. This was not applied because lint is currently working and the request asked for the minimal daemon recovery.
+
 ## 2026-08-19 — Simplify Nx TypeScript configuration
 
 ### Prompt given
