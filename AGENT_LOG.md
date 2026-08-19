@@ -1565,3 +1565,51 @@ Separate reusable styling and local icon assets while preserving all form valida
 ### Notes
 
 No external libraries, remote assets, API calls, form controls, validators, Signals, or scoring logic were changed.
+
+## 2026-08-19 20:55 UTC — Externalize styles and icon assets
+
+### Prompt given
+
+> remove Back to home buttons, place the Quote title over a larger local header image, move icons to separate local SVG files, and move styles into reusable SCSS partials plus component SCSS files. Keep form logic, Signals, API calls and validation unchanged. Do not use external libraries or remote assets.
+
+### Output received
+
+Removed Back to home controls and router-only methods from the form and result components. Moved app shell, header, landing, quote, form, and result styles into external component SCSS files, added shared SCSS color tokens, and replaced landing inline SVG icons with local SVG files under the configured public asset folder. Preserved form behavior, validation, Signals, API calls, and quote data.
+
+### What changed
+
+- `apps/policyquote-web/src/app/app.scss`: added root component stylesheet.
+- `apps/policyquote-web/src/app/app-header.component.scss`: added reusable header stylesheet.
+- `apps/policyquote-web/src/app/landing.component.scss`: moved landing styles out of TypeScript.
+- `apps/policyquote-web/src/app/quote.component.scss`: moved quote/banner styles out of TypeScript.
+- `apps/policyquote-web/src/app/quote-form.component.scss`: moved form styles out of TypeScript.
+- `apps/policyquote-web/src/app/quote-result.component.scss`: moved result styles out of TypeScript.
+- `apps/policyquote-web/src/styles/_tokens.scss`: added reusable SCSS tokens.
+- `apps/policyquote-web/public/assets/icons/shield-check.svg`: added local shield/check icon.
+- `apps/policyquote-web/public/assets/icons/clock.svg`: added local clock icon.
+- `apps/policyquote-web/public/assets/icons/check.svg`: added local check icon.
+- `apps/policyquote-web/src/app/app.ts`: switched root to external SCSS.
+- `apps/policyquote-web/src/app/app-header.component.ts`: switched header to external SCSS.
+- `apps/policyquote-web/src/app/landing.component.ts`: switched landing to external SCSS and local image icons.
+- `apps/policyquote-web/src/app/quote.component.ts`: switched quote page to external SCSS.
+- `apps/policyquote-web/src/app/quote-form.component.ts`: switched form to external SCSS and removed back-home logic.
+- `apps/policyquote-web/src/app/quote-result.component.ts`: switched result to external SCSS and removed back-home logic.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Centralize reusable styling and local icon assets without changing production quote behavior or adding external dependencies.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- Confirmed `check.svg`, `clock.svg`, and `shield-check.svg` were emitted under `dist/apps/policyquote-web/browser/assets/icons`.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in migrated components.
+- Confirmed no back-home controls, router-only `goHome` methods, inline `styles` blocks, or inline SVG markup remain in the migrated app components.
+- `git diff --check` passed.
+
+### Notes
+
+No external libraries, remote assets, form controls, validators, Signals, API calls, response models, or scoring logic were changed.
