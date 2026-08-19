@@ -1069,3 +1069,42 @@ The SAM container reported `Runtime.ImportModuleError: Cannot find module 'serve
 ### Notes
 
 Use `http://127.0.0.1:3000`, not `https://127.0.0.1:3000`. Restart any existing SAM process after rebuilding so it does not continue serving an old bundle.
+
+## 2026-08-19 20:00 UTC — Add routed application layout
+
+### Prompt given
+
+> Inspect the existing policyquote frontend. Create standalone custom layout components for AppHeaderComponent, SideNavComponent and AppFooterComponent. Add Angular routes for /quote and /dashboard, with / redirecting to /quote. Render routed content inside the layout using router-outlet. The side navigation must contain Quote and Dashboard links. Use Signals for side-nav and active-navigation state. Do not use external UI or styling libraries.
+
+### Output received
+
+Replaced the Nx starter shell with standalone header, side navigation, footer, quote, and dashboard components. Added `/quote`, `/dashboard`, and root redirect routes, rendered routed content through the layout's `router-outlet`, and added signal-backed side-nav visibility and active-navigation state synchronized with router navigation.
+
+### What changed
+
+- `apps/policyquote-web/src/app/app-header.component.ts`: added the standalone application header.
+- `apps/policyquote-web/src/app/side-nav.component.ts`: added Quote and Dashboard links with signal-backed visibility and active state.
+- `apps/policyquote-web/src/app/app-footer.component.ts`: added the standalone footer.
+- `apps/policyquote-web/src/app/quote.component.ts`: added routed Quote content.
+- `apps/policyquote-web/src/app/dashboard.component.ts`: added routed Dashboard content.
+- `apps/policyquote-web/src/app/app.ts`: composed the standalone layout components.
+- `apps/policyquote-web/src/app/app.html`: rendered the layout and routed outlet.
+- `apps/policyquote-web/src/app/app.routes.ts`: added the requested routes and root redirect.
+- `apps/policyquote-web/src/app/app.spec.ts`: updated the layout test and router providers.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Provide the requested standalone application layout and routed navigation without external UI or styling libraries.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in the changed implementation files.
+- `npx nx test policyquote-web --runInBand` was attempted but Jest failed before running tests with `TypeError: this._moduleMocker.clearMocksOnScope is not a function`.
+
+### Notes
+
+The Jest failure is an existing test-runner compatibility issue occurring during runtime setup before test discovery.
