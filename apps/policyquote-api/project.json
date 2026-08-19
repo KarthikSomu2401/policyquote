@@ -49,6 +49,57 @@
         }
       }
     },
+    "sam-build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
+      "options": {
+        "platform": "node",
+        "outputPath": "apps/policyquote-api/sam-dist",
+        "format": ["cjs"],
+        "bundle": true,
+        "main": "apps/policyquote-api/src/handler.ts",
+        "tsConfig": "apps/policyquote-api/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/policyquote-api/src/assets",
+            "output": "assets"
+          }
+        ],
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "production": {
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "sam-invoke": {
+      "dependsOn": ["sam-build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sam local invoke PolicyQuoteApi -t template.yaml -e apps/policyquote-api/events/quote.json"
+      }
+    },
+    "sam-start-api": {
+      "continuous": true,
+      "dependsOn": ["sam-build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sam local start-api -t template.yaml"
+      }
+    },
     "prune-lockfile": {
       "dependsOn": ["build"],
       "cache": true,

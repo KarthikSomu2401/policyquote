@@ -5,6 +5,9 @@
   "scripts": {
     "policyquote-api:build": "nx build policyquote-api",
     "policyquote-api:lint": "nx lint policyquote-api",
+    "policyquote-api:sam-build": "nx run policyquote-api:sam-build",
+    "policyquote-api:sam-invoke": "nx run policyquote-api:sam-invoke",
+    "policyquote-api:sam-start-api": "nx run policyquote-api:sam-start-api",
     "policyquote-api:serve": "nx serve policyquote-api",
     "policyquote-api:test": "nx test policyquote-api",
     "policyquote-api:typecheck": "nx typecheck policyquote-api",

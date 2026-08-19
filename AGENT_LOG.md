@@ -971,3 +971,71 @@ Keep runtime validation concerns separate from compile-time contracts and make t
 ### Notes
 
 Runtime behavior and API contracts were preserved.
+
+## 2026-08-19 19:04:28 UTC — Add local AWS SAM support
+
+### Prompt given
+
+> Add local AWS SAM support for the existing Nx policyquote-api. Create template.yaml and a sample quote event JSON, configure the Lambda handler(event, context), ensure the compiled API and risk-kb.json are included, and add simple local invoke/start-api commands to README.md. Do not change the scoring logic. Run the Nx build and verify the Lambda locally with SAM.
+
+### Output received
+
+Added a dedicated SAM build target that bundles the Lambda handler and copies the API assets, a root SAM template, a sample quote event, root npm commands, and README instructions. The existing Express build and scoring logic were preserved.
+
+### What changed
+
+- `apps/policyquote-api/project.json`: added the `sam-build` target for `handler.ts` with copied assets.
+- `apps/policyquote-api/events/quote.json`: added a sample API Gateway quote event.
+- `template.yaml`: added the local SAM function definition using `handler.handler`.
+- `package.json`: added SAM build, invoke, and start-api commands.
+- `README.md`: documented local SAM build, invoke, and start-api commands.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Allow the existing Nx API Lambda handler to be built and exercised locally with AWS SAM while keeping local Express development unchanged.
+
+### Validation
+
+- Normal Nx API build passed.
+- Dedicated `policyquote-api:sam-build` passed.
+- Verified the SAM bundle includes `handler.js`, `assets/risk-kb.json`, and `assets/openapi.json`.
+- Direct compiled Lambda invocation with the sample event returned HTTP 200 and a quote.
+- API test suite passed: 3 suites, 16 tests.
+- API lint passed.
+
+### Notes
+
+SAM CLI was not installed and Docker daemon was unavailable, so `sam local invoke` and `sam local start-api` could not be executed in this environment. The compiled handler was invoked directly as an equivalent local verification.
+
+## 2026-08-19 19:08:53 UTC — Register SAM commands as Nx targets
+
+### Prompt given
+
+> policyquote-api:sam-invoke or policyquote-api:sam-start-api is showing me 'Cannot find configuration for task policyquote-api:sam-start-api'
+
+### Output received
+
+Registered `sam-invoke` and `sam-start-api` as actual `policyquote-api` Nx targets and changed the root npm scripts to delegate to those targets. Moved the SAM output to a clean directory because an earlier sudo command left the old generated `dist` tree root-owned.
+
+### What changed
+
+- `apps/policyquote-api/project.json`: added `sam-invoke` and continuous `sam-start-api` targets, both depending on `sam-build`.
+- `package.json`: changed the SAM invoke/start-api scripts to call the Nx targets.
+- `template.yaml`: changed `CodeUri` to `apps/policyquote-api/sam-dist/`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Make both direct Nx commands and root npm scripts resolve consistently while avoiding stale filesystem permissions from previous generated output.
+
+### Validation
+
+- Nx discovers `sam-build`, `sam-invoke`, and `sam-start-api`.
+- `npx nx run policyquote-api:sam-build` passed.
+- Verified `sam-dist/handler.js` and `sam-dist/assets/risk-kb.json` are emitted.
+- Generated `sam-dist` output was removed afterward.
+
+### Notes
+
+SAM CLI remains unavailable in the environment, so executing the registered SAM commands still requires installing SAM CLI locally. The prior error is now target configuration, not Nx target discovery.

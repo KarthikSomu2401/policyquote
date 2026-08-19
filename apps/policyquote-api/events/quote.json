@@ -1,0 +1,16 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /policy/quote",
+  "rawPath": "/policy/quote",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "requestContext": {
+    "http": {
+      "method": "POST",
+      "path": "/policy/quote"
+    }
+  },
+  "body": "{\"customerName\":\"Karthik\",\"propertyValue\":400000,\"age\":40,\"propertyType\":\"House\",\"previousClaims\":0,\"postcode\":\"EX1 2AB\"}",
+  "isBase64Encoded": false
+}

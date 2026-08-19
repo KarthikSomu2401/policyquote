@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Local AWS SAM template for the PolicyQuote API.
+
+Resources:
+  PolicyQuoteApi:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: apps/policyquote-api/sam-dist/
+      Handler: handler.handler
+      Runtime: nodejs20.x
+      Timeout: 10
+      MemorySize: 256
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
