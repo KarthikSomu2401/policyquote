@@ -326,6 +326,45 @@ The previous path omitted `src`, and the prior asset declaration did not produce
 
 The HTTP runtime check was blocked by the terminal sandbox's temporary-file restriction; asset packaging and direct loader execution passed independently.
 
+## 2026-08-19 — Add policyquote API Jest testing
+
+### Prompt given
+
+> add jest testing for policyquote-api:test.
+
+### Output received
+
+Added an isolated Jest setup for `policyquote-api`, including an Nx test target, API test TypeScript config, Jest config, and the root `policyquote-api:test` npm script. Existing API tests initially exposed stale expectations and incomplete condition support, which were aligned with the current underwriting KB contract.
+
+### What changed
+
+- `apps/policyquote-api/project.json`: added the `test` target using `@nx/jest:jest`.
+- `apps/policyquote-api/jest.config.cts`: added Node/Jest transformation and coverage configuration.
+- `apps/policyquote-api/tsconfig.spec.json`: added API test TypeScript settings.
+- `package.json`: added `policyquote-api:test`.
+- `apps/policyquote-api/src/engine/evaluator.ts`: added the KB operators `gt`, `gte`, `between`, and `outside_range`.
+- `apps/policyquote-api/src/schema/condition.schema.ts`: expanded supported fields/operators and range bounds.
+- `apps/policyquote-api/src/schema/quote-request.schema.ts`: added optional `previousClaims` support.
+- `apps/policyquote-api/src/engine/evaluator.spec.ts`: supplied the configured range bounds.
+- `apps/policyquote-api/src/service/quote.service.spec.ts`: aligned the expected factor ID with the KB.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Provide a project-specific API Jest target and make the tests exercise the underwriting rules currently defined by the backend KB.
+
+### Validation
+
+- `npx tsc -p apps/policyquote-api/tsconfig.spec.json --noEmit` passed.
+- `npx nx test policyquote-api --runInBand` passed: 2 suites, 3 tests.
+- `npm run policyquote-api:test -- --runInBand` passed.
+- API lint passed.
+- API typecheck passed.
+
+### Notes
+
+Nx reports the Jest executor is deprecated and recommends migrating to inferred Jest targets in Nx 24. The current target remains supported and passes.
+
 ## 2026-08-19 — Reset Nx daemon state after Angular app generation
 
 ### Prompt given

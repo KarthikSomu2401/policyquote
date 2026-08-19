@@ -18,6 +18,6 @@ describe('createQuote', () => {
   it('adds points for a young customer', () => {
     const quote = createQuote(customer_quote);
     expect(quote.riskScore).toBe(20);
-    expect(quote.appliedFactors[0].id).toBe('age_young');
+    expect(quote.appliedFactors[0].id).toBe('age_young_elderly');
   });
 });

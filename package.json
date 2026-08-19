@@ -6,6 +6,7 @@
     "policyquote-api:build": "nx build policyquote-api",
     "policyquote-api:lint": "nx lint policyquote-api",
     "policyquote-api:serve": "nx serve policyquote-api",
+    "policyquote-api:test": "nx test policyquote-api",
     "policyquote-api:typecheck": "nx typecheck policyquote-api",
     "policyquote-web:build": "nx build policyquote-web",
     "policyquote-web:lint": "nx lint policyquote-web",
