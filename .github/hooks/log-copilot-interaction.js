@@ -48,6 +48,10 @@ process.stdin.on("end", () => {
 
 ## ${timestamp} — Copilot interaction
 
+### Timestamp
+
+${timestamp}
+
 ### Prompt given
 
 Review the associated Copilot chat request. Redact secrets as \`[REDACTED]\`.
