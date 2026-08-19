@@ -256,6 +256,41 @@ Provide direct project-specific commands without adding aggregate or internal pa
 
 Serve and browser e2e scripts were not started because they are long-running or browser-dependent. The web build retains the existing Angular component-style budget warning.
 
+## 2026-08-19 — Centralize app package management
+
+### Prompt given
+
+> Consider yourself as a nx architect. There is a package.json for node apply (policyquote-api), I want everything to be manage in the root package.json. So make the changes as necessary, if not give me an explaination why it needs a seperate package.json. Similarly check for other apps as well.
+
+### Output received
+
+Centralized the API package dependencies and tooling in the root `package.json`. Moved the API Nx targets into `apps/policyquote-api/project.json` and removed the nested API package manifest. The web and web-e2e apps already use `project.json` and had no nested package manifests, so no package changes were needed there.
+
+### What changed
+
+- `package.json`: owns the API runtime/dev dependencies and existing project scripts.
+- `package-lock.json`: removed the nested `apps/policyquote-api` workspace package entry and synchronized root dependencies.
+- `apps/policyquote-api/project.json`: now owns the API Nx targets.
+- `apps/policyquote-api/package.json`: removed.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Keep one npm package-management source of truth at the monorepo root while preserving Nx project configuration in the API's project file.
+
+### Validation
+
+- Nx discovers `policyquote-api`, `policyquote-web`, and `policyquote-web-e2e`.
+- No nested `apps/*/package.json` files remain.
+- No API workspace package entry remains in `package-lock.json`.
+- Root API scripts for lint, typecheck, and build passed.
+- Web lint/typecheck and web-e2e typecheck passed.
+- Generated build output was removed afterward.
+
+### Notes
+
+Nx targets do not belong in the root npm manifest; they remain project-specific in `apps/policyquote-api/project.json` while npm dependencies and scripts are centralized.
+
 ## 2026-08-19 — Reset Nx daemon state after Angular app generation
 
 ### Prompt given
