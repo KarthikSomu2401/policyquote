@@ -225,6 +225,37 @@ Make the Angular app and test configs compatible with TypeScript 6 common-source
 
 No base config changes were needed because the workspace already uses `moduleResolution: "bundler"`.
 
+## 2026-08-19 — Add project-specific npm scripts
+
+### Prompt given
+
+> Add scripts in my monorepo for all the sub-projects and update those details accordingly. I don't want to add anything unnecessary, all of those scripts should be specific to the projects
+
+### Output received
+
+Added concise root npm scripts for the three Nx subprojects: `policyquote-api`, `policyquote-web`, and `policyquote-web-e2e`. The current package uses the scoped aliases `api:*`, `web:*`, and `web-e2e:*`, each mapping directly to one project target.
+
+### What changed
+
+- `package.json`: added API build/lint/serve/typecheck, web build/lint/serve/test/typecheck, and web-e2e e2e/lint/typecheck scripts.
+- `apps/policyquote-web-e2e/project.json`: added a project-specific no-emit TypeScript typecheck target because the inferred Nx target adds incompatible declaration-only flags.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Provide direct project-specific commands without adding aggregate or internal packaging scripts.
+
+### Validation
+
+- API scripts `api:lint`, `api:typecheck`, and `api:build` passed.
+- Web scripts `web:lint`, `web:typecheck`, `web:test`, and `web:build` passed.
+- E2E scripts `web-e2e:lint` and `web-e2e:typecheck` passed.
+- Generated build output was removed afterward.
+
+### Notes
+
+Serve and browser e2e scripts were not started because they are long-running or browser-dependent. The web build retains the existing Angular component-style budget warning.
+
 ## 2026-08-19 — Reset Nx daemon state after Angular app generation
 
 ### Prompt given

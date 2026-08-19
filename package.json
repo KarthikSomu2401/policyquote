@@ -2,7 +2,20 @@
   "name": "@org/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "api:build": "nx build policyquote-api",
+    "api:lint": "nx lint policyquote-api",
+    "api:serve": "nx serve policyquote-api",
+    "api:typecheck": "nx typecheck policyquote-api",
+    "web:build": "nx build policyquote-web",
+    "web:lint": "nx lint policyquote-web",
+    "web:serve": "nx serve policyquote-web",
+    "web:test": "nx test policyquote-web",
+    "web:typecheck": "nx typecheck policyquote-web",
+    "web-e2e:e2e": "nx e2e policyquote-web-e2e",
+    "web-e2e:lint": "nx lint policyquote-web-e2e",
+    "web-e2e:typecheck": "nx typecheck policyquote-web-e2e"
+  },
   "private": true,
   "devDependencies": {
     "@angular-devkit/core": "~22.0.4",
