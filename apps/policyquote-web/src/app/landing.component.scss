@@ -1,0 +1,193 @@
+@use '../styles/tokens' as *;
+
+:host {
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+main {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.hero {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 32rem;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.hero-image,
+.hero-overlay {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.hero-image {
+  object-fit: cover;
+}
+
+.hero-overlay {
+  background: rgba(15, 23, 42, 0.64);
+}
+
+.hero-content {
+  box-sizing: border-box;
+  color: $surface;
+  max-width: 42rem;
+  padding: 2rem 1.5rem;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+.hero-content h1 {
+  font-size: clamp(2.25rem, 7vw, 4.5rem);
+  line-height: 1.05;
+  margin: 0;
+}
+
+.hero-content p {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin: 1rem auto 0;
+  max-width: 34rem;
+}
+
+button {
+  background: $blue-700;
+  border: 2px solid $surface;
+  border-radius: 0.25rem;
+  color: $surface;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  min-height: 2.75rem;
+  margin-top: 1.5rem;
+  padding: 0.8rem 1.5rem;
+}
+
+button:hover,
+button:focus-visible {
+  background: $blue-900;
+  outline: 3px solid #bfdbfe;
+  outline-offset: 3px;
+}
+
+.section {
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 72rem;
+  padding: 4rem 1.5rem;
+  width: 100%;
+}
+
+.section-heading {
+  color: $blue-900;
+  margin: 0;
+  text-align: center;
+}
+
+.section-intro {
+  color: $slate-600;
+  line-height: 1.6;
+  margin: 0.75rem auto 0;
+  max-width: 38rem;
+  text-align: center;
+}
+
+.card-grid,
+.steps {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0 0;
+}
+
+.card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.reassurance-card {
+  background: $surface;
+  border: 1px solid $slate-200;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.icon {
+  color: $blue-700;
+  display: block;
+  height: 2rem;
+  margin-bottom: 1rem;
+  width: 2rem;
+}
+
+.reassurance-card h3 {
+  color: $slate-900;
+  margin: 0;
+}
+
+.reassurance-card p,
+.step p {
+  color: $slate-600;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.steps {
+  counter-reset: quote-step;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  padding: 0;
+}
+
+.step {
+  counter-increment: quote-step;
+  padding: 0.5rem 0 0.5rem 3.5rem;
+  position: relative;
+}
+
+.step::before {
+  align-items: center;
+  background: $blue-100;
+  border-radius: 50%;
+  color: $blue-900;
+  content: counter(quote-step);
+  display: flex;
+  font-weight: 700;
+  height: 2.25rem;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 2.25rem;
+}
+
+.step h3 {
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .card-grid,
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    min-height: 28rem;
+  }
+
+  .section {
+    padding: 3rem 1rem;
+  }
+}

@@ -1,0 +1,32 @@
+@use '../styles/tokens' as *;
+
+:host {
+  background: $surface;
+  border-bottom: 1px solid $slate-200;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+}
+
+header {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  margin: 0 auto;
+  max-width: 72rem;
+  min-height: 3.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.brand {
+  color: $blue-900;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.brand:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 3px;
+}

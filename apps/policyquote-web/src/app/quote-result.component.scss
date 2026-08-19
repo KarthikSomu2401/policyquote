@@ -1,0 +1,116 @@
+@use '../styles/tokens' as *;
+
+:host {
+  background: #f8fafc;
+  border: 1px solid $slate-300;
+  border-radius: 0.5rem;
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 1.25rem;
+}
+
+h2 {
+  color: $blue-900;
+  margin-top: 0;
+}
+
+.premium-summary,
+.summary,
+.calculation,
+.risk-factors {
+  background: $surface;
+  border: 1px solid $slate-200;
+  border-radius: 0.4rem;
+  padding: 1rem;
+}
+
+.premium-summary {
+  border-color: #bfdbfe;
+}
+
+.premium-label,
+.monthly-premium {
+  color: $slate-600;
+  margin: 0;
+}
+
+.premium-amount {
+  color: $blue-900;
+  font-size: clamp(2rem, 7vw, 2.75rem);
+  font-weight: 700;
+  margin: 0.25rem 0;
+}
+
+.monthly-premium {
+  font-size: 0.95rem;
+}
+
+.summary {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1rem;
+}
+
+.summary p {
+  margin: 0;
+}
+
+.summary h3 {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.calculation,
+.risk-factors {
+  margin-top: 1rem;
+}
+
+.calculation h3,
+.risk-factors h3 {
+  margin-bottom: 0.75rem;
+}
+
+dl {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr auto;
+  margin: 0;
+}
+
+dt {
+  color: $slate-600;
+}
+
+dd {
+  font-weight: 700;
+  margin: 0;
+  text-align: right;
+}
+
+.estimate-note {
+  color: $slate-600;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+ul {
+  margin-bottom: 0;
+  padding-left: 1.25rem;
+}
+
+li {
+  line-height: 1.45;
+}
+
+li + li {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 560px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
+}

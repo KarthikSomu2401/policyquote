@@ -1485,3 +1485,83 @@ Improve readability and visual hierarchy while preserving the existing Reactive 
 ### Notes
 
 No external libraries, API changes, form logic changes, signal changes, or response model changes were made.
+
+## 2026-08-19 20:46 UTC — Add locale currency pipe
+
+### Prompt given
+
+> Add a small reusable CurrencyFormatPipe to the frontend. Use navigator.language as the browser locale and map supported regions explicitly: IE/GB to GBP, US to USD, and DE/FR/ES/IT to EUR; use EUR as the fallback. Format monthlyPremium, annualPremium, basePremium and riskMultiplier-related monetary values with Intl.NumberFormat. Do not change numeric values returned by the API, do not use geolocation or external APIs, and do not install external libraries. Add focused tests for GBP, USD, EUR and the fallback.
+
+### Output received
+
+Added standalone `CurrencyFormatPipe` using `navigator.language`, explicit region-to-currency mapping, EUR fallback, and `Intl.NumberFormat`. Wired it into the existing quote result annual and monthly monetary displays without changing numeric API data or response models. Added focused locale coverage for GBP, USD, EUR regions, and unsupported-region EUR fallback.
+
+### What changed
+
+- `apps/policyquote-web/src/app/currency-format.pipe.ts`: added the reusable locale-aware currency pipe.
+- `apps/policyquote-web/src/app/currency-format.pipe.spec.ts`: added GBP, USD, EUR, and fallback tests.
+- `apps/policyquote-web/src/app/quote-result.component.ts`: replaced hard-coded currency/DecimalPipe presentation with `currencyFormat`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Present monetary values using the browser locale and required currency mapping while preserving all API numeric values and quote logic.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in the pipe, tests, or result component.
+- `npx nx test policyquote-web --runInBand` was attempted but Jest failed before running tests with `TypeError: this._moduleMocker.clearMocksOnScope is not a function`.
+
+### Notes
+
+The current `QuoteResult` response model exposes annual premium only; monthly presentation is derived from that existing numeric value. No base-premium or multiplier fields exist in the frontend response model to change.
+
+## 2026-08-19 20:52 UTC — Externalize quote styles and icons
+
+### Prompt given
+
+> remove Back to home buttons, place the Quote title over a larger local header image, move icons to separate local SVG files, and move styles into reusable SCSS partials plus component SCSS files. Keep form logic, Signals, API calls and validation unchanged. Do not use external libraries or remote assets.
+
+### Output received
+
+Removed the form and result Back to home buttons and their router-only methods. Moved app, header, landing, quote, form, and result presentation into external component SCSS files with a shared `_tokens.scss` partial. Replaced landing inline SVG icons with three local public SVG assets and confirmed they are emitted in the production asset output. The quote title remains above its larger local quote banner image.
+
+### What changed
+
+- `apps/policyquote-web/src/app/app.scss`: added root component styles.
+- `apps/policyquote-web/src/app/app-header.component.scss`: added reusable header styles.
+- `apps/policyquote-web/src/app/landing.component.scss`: moved landing styles out of the component.
+- `apps/policyquote-web/src/app/quote.component.scss`: moved quote page/banner styles out of the component.
+- `apps/policyquote-web/src/app/quote-form.component.scss`: moved form styles and removed back-home styling.
+- `apps/policyquote-web/src/app/quote-result.component.scss`: moved result styles and removed back-home styling.
+- `apps/policyquote-web/src/styles/_tokens.scss`: added shared SCSS color tokens.
+- `apps/policyquote-web/public/assets/icons/shield-check.svg`: added local shield icon.
+- `apps/policyquote-web/public/assets/icons/clock.svg`: added local clock icon.
+- `apps/policyquote-web/public/assets/icons/check.svg`: added local check icon.
+- `apps/policyquote-web/src/app/app.ts`: switched the root component to external SCSS.
+- `apps/policyquote-web/src/app/app-header.component.ts`: switched the header to external SCSS.
+- `apps/policyquote-web/src/app/landing.component.ts`: switched to external SCSS and local icon image assets.
+- `apps/policyquote-web/src/app/quote.component.ts`: switched to external SCSS.
+- `apps/policyquote-web/src/app/quote-form.component.ts`: switched to external SCSS and removed back-home logic.
+- `apps/policyquote-web/src/app/quote-result.component.ts`: switched to external SCSS and removed back-home logic.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Separate reusable styling and local icon assets while preserving all form validation, Signals, API calls, scoring, and quote behavior.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- Confirmed `check.svg`, `clock.svg`, and `shield-check.svg` were emitted under `dist/apps/policyquote-web/browser/assets/icons`.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in the migrated components.
+- Confirmed no `Back to home`, `goHome`, inline `styles`, or inline SVG markup remain in the migrated app components.
+
+### Notes
+
+No external libraries, remote assets, API calls, form controls, validators, Signals, or scoring logic were changed.

@@ -7,14 +7,7 @@ import { AppHeaderComponent } from './app-header.component';
   imports: [AppHeaderComponent, RouterOutlet],
   selector: 'app-root',
   templateUrl: './app.html',
-  styles: `
-    :host {
-      box-sizing: border-box;
-      display: block;
-      min-height: 100vh;
-      width: 100%;
-    }
-  `,
+  styleUrl: './app.scss',
 })
 export class App {
   protected title = 'policyquote-web';

@@ -1,5 +1,4 @@
-import { Component, inject, output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, output } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -21,157 +20,7 @@ type QuoteForm = {
   standalone: true,
   selector: 'app-quote-form',
   imports: [ReactiveFormsModule],
-  styles: `
-    :host {
-      display: block;
-      min-width: 0;
-    }
-
-    form {
-      background: #ffffff;
-      border: 1px solid #dbe3ef;
-      border-radius: 0.5rem;
-      box-shadow: 0 0.5rem 1.5rem rgba(30, 58, 138, 0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      min-width: 0;
-      padding: clamp(1rem, 3vw, 1.5rem);
-    }
-
-    fieldset {
-      background: #f8fafc;
-      border: 1px solid #dbe3ef;
-      border-radius: 0.35rem;
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: 1fr;
-      min-width: 0;
-      margin: 0;
-      padding: 1rem;
-    }
-
-    legend {
-      color: #1e3a8a;
-      font-weight: 700;
-      padding: 0 0.5rem;
-    }
-
-    .form-heading {
-      color: #1e3a8a;
-      font-size: 1.45rem;
-      line-height: 1.2;
-      margin: 0 0 0.4rem;
-    }
-
-    .form-intro,
-    .required-note {
-      color: #4b5563;
-      line-height: 1.6;
-      margin: 0;
-    }
-
-    .required-indicator {
-      color: #b91c1c;
-      font-weight: 700;
-    }
-
-    .field {
-      align-content: start;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      min-width: 0;
-    }
-
-    label {
-      color: #1f2937;
-      font-weight: 700;
-      line-height: 1.35;
-      min-height: 1.35rem;
-    }
-
-    input,
-    select {
-      border: 1px solid #9ca3af;
-      border-radius: 0.25rem;
-      box-sizing: border-box;
-      font: inherit;
-      min-height: 2.75rem;
-      padding: 0.5rem;
-      width: 100%;
-    }
-
-    select {
-      background: #ffffff;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: #1d4ed8;
-      outline: 2px solid #bfdbfe;
-      outline-offset: 1px;
-    }
-
-    input.ng-touched.ng-invalid,
-    select.ng-touched.ng-invalid {
-      border-color: #b91c1c;
-    }
-
-    .validation-message {
-      color: #b91c1c;
-      font-size: 0.875rem;
-      line-height: 1.35;
-      min-height: 1.2rem;
-    }
-
-    button {
-      align-self: flex-start;
-      background: #1d4ed8;
-      border: 0;
-      border-radius: 0.25rem;
-      color: #ffffff;
-      cursor: pointer;
-      font: inherit;
-      font-weight: 700;
-      min-height: 2.75rem;
-      padding: 0.75rem 1.25rem;
-      width: fit-content;
-    }
-
-    button:hover,
-    button:focus-visible {
-      background: #1e3a8a;
-    }
-
-    .back-home {
-      align-self: flex-start;
-      background: transparent;
-      border: 1px solid #1d4ed8;
-      color: #1e3a8a;
-      margin-top: 0;
-      text-decoration: none;
-    }
-
-    .back-home:hover,
-    .back-home:focus-visible {
-      background: #eff6ff;
-    }
-
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    select:focus-visible {
-      outline: 3px solid #60a5fa;
-      outline-offset: 2px;
-    }
-
-    @media (min-width: 561px) {
-      fieldset {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-  `,
+  styleUrl: './quote-form.component.scss',
   template: `
     <form [formGroup]="quoteForm" (ngSubmit)="submitQuote()" novalidate>
       <div>
@@ -283,13 +132,11 @@ type QuoteForm = {
         </div>
       </fieldset>
 
-      <button class="back-home" type="button" (click)="goHome()">Back to home</button>
       <button type="submit">Get quote</button>
     </form>
   `,
 })
 export class QuoteFormComponent {
-  private readonly router = inject(Router);
   readonly submitted = output<QuoteRequest>();
 
   readonly quoteForm: FormGroup<QuoteForm> = new FormGroup<QuoteForm>({
@@ -327,7 +174,4 @@ export class QuoteFormComponent {
     });
   }
 
-  goHome(): void {
-    void this.router.navigate(['/']);
-  }
 }
