@@ -14,8 +14,14 @@ export function createQuote(input: QuoteInput) {
     0,
   );
 
+  const riskBand = Object.values(knowledgeBase.riskBands).find(
+    (band) => riskScore >= band.min && riskScore <= band.max,
+  );
+
   const annualPremium =
-    knowledgeBase.basePremium * knowledgeBase.coverageLoadFactor;
+    knowledgeBase.basePremium *
+    knowledgeBase.coverageLoadFactor *
+    (riskBand?.multiplier ?? 1);
 
   return {
     customerName: input.customerName,

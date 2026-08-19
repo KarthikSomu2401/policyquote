@@ -1,5 +1,11 @@
 import type { Condition } from './condition.schema';
 
+export interface RiskBand {
+  min: number;
+  max: number;
+  multiplier: number;
+}
+
 export interface RiskFactor {
   id: string;
   description: string;

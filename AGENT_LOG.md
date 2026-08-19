@@ -707,3 +707,71 @@ Allow the Angular development application to call the Node API while preserving 
 ### Notes
 
 No package changes were needed because `cors` was already a root dependency. No unrelated files were modified.
+
+## 2026-08-19 18:39:26 UTC — Complete Lambda API contract
+
+### Prompt given
+
+> Inspect only apps/policyquote-api. Complete the backend contract: Lambda-compatible handler(event, context), POST /policy/quote, Zod validation, required response fields, and the premium formula. Add focused tests and update AGENT_LOG.md.
+
+### Output received
+
+Separated Express app construction from local server startup, added a Lambda-compatible handler through `serverless-http`, preserved the `POST /policy/quote` Zod validation route, and applied the configured risk-band premium formula.
+
+### What changed
+
+- `apps/policyquote-api/src/app.ts`: centralized Express middleware and route construction.
+- `apps/policyquote-api/src/handler.ts`: exported the Lambda-compatible `handler(event, context)` adapter.
+- `apps/policyquote-api/src/main.ts`: retained local server startup using the shared app.
+- `apps/policyquote-api/src/service/quote.service.ts`: applied `basePremium * coverageLoadFactor * riskBand.multiplier`.
+- `apps/policyquote-api/src/schema/knowledgebase.schema.ts`: added the `riskBands` type contract.
+- `apps/policyquote-api/src/api.contract.spec.ts`: added focused Lambda health, validation, required-response, and premium-formula tests.
+- `package.json`: added `serverless-http` and `@types/aws-lambda`.
+- `package-lock.json`: synchronized Lambda dependencies.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Support both local Express execution and Lambda deployment while enforcing the API contract through Zod validation and focused tests.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 3 suites, 8 tests.
+- API lint passed.
+- API build passed and emitted `main.js`, `assets/openapi.json`, and `assets/risk-kb.json`.
+- Generated build output was removed afterward.
+
+### Notes
+
+Only `apps/policyquote-api` implementation/test files and the root dependency manifests were changed for the API contract.
+
+## 2026-08-19 18:40:48 UTC — Move RiskBand to risk schema
+
+### Prompt given
+
+> move #sym:RiskBand to risk.schema
+
+### Output received
+
+Moved the `RiskBand` interface from `knowledgebase.schema.ts` to `risk.schema.ts` and updated the knowledge-base schema to import it as a type.
+
+### What changed
+
+- `apps/policyquote-api/src/schema/risk.schema.ts`: added the `RiskBand` interface.
+- `apps/policyquote-api/src/schema/knowledgebase.schema.ts`: removed the local declaration and added a type import.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Keep risk-related types together while preserving the existing `KnowledgeBase` contract.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 3 suites, 8 tests.
+- API lint passed.
+
+### Notes
+
+No runtime behavior changed.

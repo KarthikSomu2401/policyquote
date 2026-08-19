@@ -80,9 +80,11 @@
     "@angular/platform-browser": "~22.0.4",
     "@angular/platform-browser-dynamic": "~22.0.4",
     "@angular/router": "~22.0.4",
+    "@types/aws-lambda": "^8.10.162",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "rxjs": "~7.8.0",
+    "serverless-http": "^4.0.0",
     "swagger-ui-express": "^5.0.1",
     "tsx": "^4.23.12",
     "zod": "^4.4.3"
