@@ -26,6 +26,16 @@ To run any task with Nx use:
 npx nx run <project-name>:<target>
 ```
 
+## Run PolicyQuote E2E tests
+
+Run the deterministic Playwright suite for the frontend with:
+
+```sh
+npx nx e2e policyquote-web-e2e
+```
+
+The e2e target starts `policyquote-web` automatically and mocks `POST /policy/quote`, so the tests do not require the local backend.
+
 These targets are either [inferred automatically](https://nx.dev/docs/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
 
 [More about running tasks in the docs &raquo;](https://nx.dev/docs/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)

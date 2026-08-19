@@ -1613,3 +1613,38 @@ Centralize reusable styling and local icon assets without changing production qu
 ### Notes
 
 No external libraries, remote assets, form controls, validators, Signals, API calls, response models, or scoring logic were changed.
+
+## 2026-08-19 21:10 UTC — Add PolicyQuote Playwright E2E suite
+
+### Prompt given
+
+> Use the existing policyquote-web-e2e project; do not generate or delete a project. Configure Playwright for it using the supported Nx Playwright configuration generator, then replace the stale Welcome example with deterministic PolicyQuote UI tests. Configure the E2E target to serve policyquote-web automatically. Test landing CTA, required form validation, successful quote result, loading state, API error state, risk band and applied factors. Mock POST /policy/quote with Playwright page.route(). Use accessible role/label locators or data-testid attributes. Add README instructions for running project. Do not change production business logic or install external UI libraries.
+
+### Output received
+
+Configured the existing `policyquote-web-e2e` project with the supported `@nx/playwright:configuration` generator, replacing the stale Welcome spec with deterministic Playwright tests. Added accessible role/label-driven coverage for landing CTA navigation, all required validation messages, keyboard CTA/form submission, successful result/premium/risk/factor rendering, loading state, and API error state. All quote POST requests are mocked with `page.route('**/policy/quote')`. Added the requested README command and configured the test server to start `policyquote-web` through its existing static server target.
+
+### What changed
+
+- `apps/policyquote-web-e2e/playwright.config.mts`: generated/configured Playwright, en-GB locale, and automatic `policyquote-web` server startup.
+- `apps/policyquote-web-e2e/eslint.config.mjs`: updated by the supported Nx Playwright configuration generator.
+- `apps/policyquote-web-e2e/src/example.spec.ts`: removed the stale Welcome example.
+- `apps/policyquote-web-e2e/src/policyquote.spec.ts`: added deterministic accessible UI tests with mocked quote API responses.
+- `README.md`: documented `npx nx e2e policyquote-web-e2e` and backend-independent mocking.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Add complete deterministic browser coverage to the existing e2e project without changing production business logic or creating another project.
+
+### Validation
+
+- `npx nx typecheck policyquote-web-e2e` passed.
+- `npx nx lint policyquote-web-e2e` passed.
+- `npx nx show project policyquote-web-e2e --json` confirmed the inferred `e2e` target depends on `policyquote-web:serve`.
+- `git diff --check` passed.
+- `npx nx e2e policyquote-web-e2e` reached the Playwright suite but browser execution was blocked because the local Chromium executable is not installed at the Playwright cache path.
+
+### Notes
+
+The repository already had `@nx/playwright/plugin` configured, so the generator updated the existing project configuration without creating or deleting an Nx project. No external UI libraries or backend dependency were added.
