@@ -19,6 +19,19 @@ import { QuoteRequest, QuoteResult } from './quote.types';
       gap: 1.5rem;
       margin: 0 auto;
       max-width: 72rem;
+      padding: 1rem 0;
+    }
+
+    h1 {
+      color: #1e3a8a;
+      margin: 0;
+    }
+
+    .quote-image {
+      display: block;
+      height: auto;
+      max-width: 22rem;
+      width: 100%;
     }
 
     .quote-content {
@@ -26,6 +39,27 @@ import { QuoteRequest, QuoteResult } from './quote.types';
       display: flex;
       flex-wrap: wrap;
       gap: 2rem;
+    }
+
+    .quote-feedback {
+      flex: 1 1 20rem;
+      min-width: 0;
+    }
+
+    .loading,
+    .error {
+      margin: 0;
+      padding: 0.75rem 1rem;
+    }
+
+    .loading {
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+
+    .error {
+      background: #fef2f2;
+      color: #991b1b;
     }
 
     app-quote-form,
@@ -36,17 +70,26 @@ import { QuoteRequest, QuoteResult } from './quote.types';
   template: `
     <section class="quote-page" aria-labelledby="quote-title">
       <h1 id="quote-title">Quote</h1>
+      <img
+        class="quote-image"
+        src="assets/policyquote-quote.svg"
+        alt="Clipboard showing a home insurance quote checklist"
+        width="640"
+        height="360"
+        loading="lazy"
+        decoding="async"
+      />
 
       <div class="quote-content">
         <app-quote-form (submitted)="requestQuote($event)" />
 
-        <div>
+        <div class="quote-feedback">
           @if (loading()) {
-            <p role="status">Loading quote...</p>
+            <p class="loading" role="status">Loading quote...</p>
           }
 
           @if (errorMessage(); as message) {
-            <p role="alert">{{ message }}</p>
+            <p class="error" role="alert">{{ message }}</p>
           }
 
           @if (quoteResult(); as result) {

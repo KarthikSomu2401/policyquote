@@ -11,21 +11,18 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('should render the application layout', async () => {
+  it('should render the routed application outlet', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-header')).not.toBeNull();
     expect(compiled.querySelector('router-outlet')).not.toBeNull();
-    expect(compiled.querySelector('app-footer')).not.toBeNull();
   });
 
-  it('should configure quote, dashboard, and the root redirect routes', () => {
+  it('should configure the landing page as the default and preserve quote routing', () => {
     expect(appRoutes).toEqual(
       expect.arrayContaining([
+        expect.objectContaining({ path: '', component: expect.any(Function) }),
         expect.objectContaining({ path: 'quote' }),
-        expect.objectContaining({ path: 'dashboard' }),
-        expect.objectContaining({ path: '', redirectTo: 'quote' }),
       ]),
     );
   });

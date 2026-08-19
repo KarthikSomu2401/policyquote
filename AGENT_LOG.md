@@ -1222,3 +1222,109 @@ Reduce navigation chrome and give the dashboard and quote page the requested sim
 ### Notes
 
 `side-nav.component.ts` remains available but is no longer rendered by the root layout. No external libraries were added.
+
+## 2026-08-19 20:17 UTC — Replace layout with landing page
+
+### Prompt given
+
+> Remove the navigation, dashboard route and layout components if they were added. Create a standalone landing page as the default route. It should contain only a short PolicyQuote introduction and a centered “Enquire Quote” button. Clicking the button should reveal or navigate to the existing quote form. Keep existing quote logic unchanged. Do not use external UI or styling libraries.
+
+### Output received
+
+Removed the rendered header, footer, side-nav, dashboard route, and associated layout components. Added standalone `LandingComponent` as the default route with a short PolicyQuote introduction and centered `Enquire Quote` button navigating to `/quote`. Preserved the existing quote route, form, result, signals, and API service unchanged.
+
+### What changed
+
+- `apps/policyquote-web/src/app/landing.component.ts`: added the standalone landing page and quote navigation button.
+- `apps/policyquote-web/src/app/landing.component.spec.ts`: added CTA navigation coverage.
+- `apps/policyquote-web/src/app/app.ts`: reduced the root app to a standalone router outlet.
+- `apps/policyquote-web/src/app/app.html`: removed the layout shell.
+- `apps/policyquote-web/src/app/app.routes.ts`: made the landing page the default route and retained `/quote`.
+- `apps/policyquote-web/src/app/app.spec.ts`: updated root outlet and route assertions.
+- Deleted `apps/policyquote-web/src/app/app-header.component.ts`, `apps/policyquote-web/src/app/app-footer.component.ts`, `apps/policyquote-web/src/app/dashboard.component.ts`, `apps/policyquote-web/src/app/side-nav.component.ts`, and `apps/policyquote-web/src/app/app.scss`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Replace the unused navigation/dashboard layout with a focused landing page while keeping the existing quote flow intact.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in changed implementation files.
+- `npx nx test policyquote-web --runInBand` was attempted but Jest failed before running tests with `TypeError: this._moduleMocker.clearMocksOnScope is not a function`.
+
+### Notes
+
+No external UI or styling libraries were added. Quote logic and the user-edited `quote-api.service.ts` were left unchanged.
+
+## 2026-08-19 20:20 UTC — Add local landing and quote imagery
+
+### Prompt given
+
+> Add only locally stored image assets for the PolicyQuote landing page and quote page. Use royalty-free placeholder or generated insurance/home imagery stored under the app assets folder. Add meaningful alt text, lazy loading where appropriate, and do not use remote image URLs or external libraries. Keep the landing page and form functionality unchanged.
+
+### Output received
+
+Added two locally generated SVG illustrations under the frontend public assets folder and referenced them from the landing and quote pages. The landing image has descriptive alt text and loads immediately as first-viewport content; the quote illustration has descriptive alt text, explicit dimensions, and lazy loading. Landing navigation and quote form/API behavior were unchanged.
+
+### What changed
+
+- `apps/policyquote-web/public/assets/policyquote-home.svg`: added generated home insurance imagery for the landing page.
+- `apps/policyquote-web/public/assets/policyquote-quote.svg`: added generated quote checklist imagery for the quote page.
+- `apps/policyquote-web/src/app/landing.component.ts`: added the local landing image with meaningful alt text.
+- `apps/policyquote-web/src/app/quote.component.ts`: added the local quote image with meaningful alt text and lazy loading.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Provide local visual assets for both pages without remote URLs, external libraries, or changes to landing/form functionality.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- Confirmed both SVG assets were emitted under `dist/apps/policyquote-web/browser/assets`.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in the changed components.
+
+### Notes
+
+The assets are generated local SVG placeholders and contain no remote references. No external libraries were added.
+
+## 2026-08-19 20:22 UTC — Polish landing and quote presentation
+
+### Prompt given
+
+> Add component-scoped CSS only for a polished but simple landing page and quote form. Include a centered enquiry call-to-action, responsive layout, readable form grouping, validation states, loading state, result card and risk-factor list. Do not use external CSS or UI libraries, do not add navigation, and do not change API or form logic.
+
+### Output received
+
+Added component-scoped presentation styles and markup for the landing CTA, responsive quote layout, grouped form fields, touched-invalid validation messages, loading/error feedback, quote result card, risk-factor list, and risk-band badge. Existing navigation state, Reactive Form validators/submission logic, quote signals, and API service were not changed.
+
+### What changed
+
+- `apps/policyquote-web/src/app/landing.component.ts`: polished the centered landing CTA and local image presentation.
+- `apps/policyquote-web/src/app/quote.component.ts`: styled the responsive quote layout and loading/error states.
+- `apps/policyquote-web/src/app/quote-form.component.ts`: added grouped field presentation, validation state bindings/messages, and responsive form CSS.
+- `apps/policyquote-web/src/app/quote-result.component.ts`: added result card styling and applied risk-factor list presentation.
+- `apps/policyquote-web/src/app/risk-band-badge.component.ts`: added scoped risk-band badge styling.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Improve readability and feedback states using only component-scoped CSS and presentation markup while preserving application behavior.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in changed components.
+- Confirmed existing API, form validators, and submission handlers remained present and unchanged.
+
+### Notes
+
+No external CSS/UI libraries, navigation, API calls, or form logic were added or changed.

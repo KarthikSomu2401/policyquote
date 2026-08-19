@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Protected family home</title>
+  <desc id="desc">A simple illustration of a home beneath a protective roof shape.</desc>
+  <rect width="720" height="420" fill="#eff6ff"/>
+  <circle cx="585" cy="105" r="50" fill="#bfdbfe"/>
+  <path d="M120 225 360 70l240 155v115H120Z" fill="#ffffff" stroke="#1d4ed8" stroke-width="12"/>
+  <path d="M82 235 360 45l278 190" fill="none" stroke="#1e3a8a" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"/>
+  <path d="M287 340V225h146v115" fill="#dbeafe" stroke="#1d4ed8" stroke-width="12"/>
+  <rect x="175" y="240" width="68" height="65" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="10"/>
+  <rect x="477" y="240" width="68" height="65" rx="6" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="10"/>
+  <path d="M360 45 615 220l-34 48L360 125 139 268l-34-48Z" fill="#2563eb" opacity=".18"/>
+  <path d="M145 362h430" stroke="#93c5fd" stroke-linecap="round" stroke-width="14"/>
+</svg>
