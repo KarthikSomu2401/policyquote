@@ -1,0 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface KnowledgeBase {
+  version: string;
+}
+
+export function loadKnowledgeBase(): KnowledgeBase {
+  const filePath = join(__dirname, 'assets', 'risk-kb.json');
+
+  return JSON.parse(readFileSync(filePath, 'utf8')) as KnowledgeBase;
+}

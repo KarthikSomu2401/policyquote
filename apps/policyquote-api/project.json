@@ -20,10 +20,16 @@
         "platform": "node",
         "outputPath": "apps/policyquote-api/dist",
         "format": ["cjs"],
-        "bundle": false,
+        "bundle": true,
         "main": "apps/policyquote-api/src/main.ts",
         "tsConfig": "apps/policyquote-api/tsconfig.app.json",
-        "assets": ["apps/policyquote-api/src/assets"],
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/policyquote-api/src/assets",
+            "output": "assets"
+          }
+        ],
         "esbuildOptions": {
           "sourcemap": true,
           "outExtension": {

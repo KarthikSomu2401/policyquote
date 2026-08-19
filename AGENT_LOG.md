@@ -291,6 +291,41 @@ Keep one npm package-management source of truth at the monorepo root while prese
 
 Nx targets do not belong in the root npm manifest; they remain project-specific in `apps/policyquote-api/project.json` while npm dependencies and scripts are centralized.
 
+## 2026-08-19 — Fix backend knowledge-base loading
+
+### Prompt given
+
+> #sym:loadKnowledgeBase url is not working. updated it to fetch from assets
+
+> kb-loader file is not being populated. so clean cache and check why we have this issue and give me the reson for the fix
+
+### Output received
+
+Reset Nx and rebuilt the API from a clean state. Fixed the loader to resolve `assets/risk-kb.json` relative to the running module, configured Nx to copy the source KB into `dist/assets`, and enabled bundling so the loader is included in the emitted API executable.
+
+### What changed
+
+- `apps/policyquote-api/src/kb-loader.ts`: changed the KB path from the invalid workspace-relative `apps/policyquote-api/assets/risk-kb.json` to `__dirname/assets/risk-kb.json`.
+- `apps/policyquote-api/project.json`: changed the API build to bundle the loader and explicitly copy `src/assets` to `dist/assets`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+The previous path omitted `src`, and the prior asset declaration did not produce a packaged asset in the built output. With `bundle: false`, the emitted wrapper also referenced `kb-loader` without producing a corresponding runtime module. The corrected build now emits `dist/main.js` and `dist/assets/risk-kb.json`, so the module-relative loader path resolves reliably.
+
+### Validation
+
+- `npx nx reset` succeeded.
+- Clean API build succeeded with no cache hit.
+- Verified `apps/policyquote-api/dist/assets/risk-kb.json` exists and contains the expected KB data.
+- Direct `tsx` loader execution returned `Loader populated KB: 1.0.0`.
+- API typecheck and lint passed.
+- Generated build output was removed afterward.
+
+### Notes
+
+The HTTP runtime check was blocked by the terminal sandbox's temporary-file restriction; asset packaging and direct loader execution passed independently.
+
 ## 2026-08-19 — Reset Nx daemon state after Angular app generation
 
 ### Prompt given

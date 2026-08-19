@@ -1,14 +1,18 @@
 import express from 'express';
+import { loadKnowledgeBase } from './kb-loader';
 
 const app = express();
-const port = Number(process.env.PORT ?? 3000);
+const port = 3000;
 
 app.get('/health', (_request, response) => {
-  response.status(200).json({
-    status: 'ok'
+  const knowledgeBase = loadKnowledgeBase();
+
+  response.json({
+    status: 'ok',
+    kbVersion: knowledgeBase.version
   });
 });
 
 app.listen(port, () => {
-  console.log(`PolicyQuote API running on http://localhost:${port}`);
+  console.log(`API listening on http://localhost:${port}`);
 });
