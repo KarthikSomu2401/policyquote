@@ -1,0 +1,161 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "PolicyQuote API",
+    "version": "1.0.0",
+    "description": "Deterministic policy underwriting and quote calculation API."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Check API health",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "API is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/policy/quote": {
+      "post": {
+        "summary": "Calculate a policy quote",
+        "operationId": "createPolicyQuote",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calculated policy quote",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid quote request"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "required": ["status", "kbVersion"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "kbVersion": {
+            "type": "string",
+            "example": "1.0.0"
+          }
+        }
+      },
+      "QuoteRequest": {
+        "type": "object",
+        "required": ["customerName", "propertyValue", "age", "propertyType"],
+        "properties": {
+          "customerName": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Karthik"
+          },
+          "propertyValue": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "example": 400000
+          },
+          "age": {
+            "type": "integer",
+            "minimum": 18,
+            "maximum": 120,
+            "example": 40
+          },
+          "propertyType": {
+            "type": "string",
+            "enum": ["House", "Flat", "Bungalow"],
+            "example": "House"
+          },
+          "previousClaims": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0
+          },
+          "postcode": {
+            "type": "string",
+            "minLength": 1,
+            "example": "EX1 2AB"
+          }
+        }
+      },
+      "AppliedFactor": {
+        "type": "object",
+        "required": ["id", "description", "condition", "points"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "points": {
+            "type": "number"
+          }
+        }
+      },
+      "QuoteResponse": {
+        "type": "object",
+        "required": ["customerName", "annualPremium", "riskScore", "appliedFactors"],
+        "properties": {
+          "customerName": {
+            "type": "string"
+          },
+          "annualPremium": {
+            "type": "number",
+            "example": 360
+          },
+          "riskScore": {
+            "type": "number",
+            "example": 20
+          },
+          "appliedFactors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppliedFactor"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -642,3 +642,68 @@ Represent the postcode factor entirely as KB data while reusing the generic `sta
 ### Notes
 
 The existing generic `starts_with` operator and registry handler were preserved; no risk-engine changes were made.
+
+## 2026-08-19 18:25:45 UTC — Add Swagger UI to policyquote API
+
+### Prompt given
+
+> Add Swagger UI to the Nx Node API using swagger-ui-express. Create openapi.json for GET /health and POST /policy/quote, mount Swagger at /api-docs, update AGENT_LOG.md, and run the API tests.
+
+### Output received
+
+Added a checked-in OpenAPI 3.0.3 document for the health and quote endpoints, mounted Swagger UI at `/api-docs`, and centralized the Swagger runtime and type dependencies in the root package.
+
+### What changed
+
+- `apps/policyquote-api/src/assets/openapi.json`: documents `GET /health`, `POST /policy/quote`, request/response schemas, and validation responses.
+- `apps/policyquote-api/src/main.ts`: mounts Swagger UI at `/api-docs`.
+- `apps/policyquote-api/src/engine/evaluator.spec.ts`: added OpenAPI path coverage.
+- `package.json`: added `swagger-ui-express` and `@types/swagger-ui-express` dependencies.
+- `package-lock.json`: synchronized Swagger dependencies.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Expose an interactive API contract for the Node application without duplicating route logic or changing business behavior.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 2 suites, 5 tests.
+- API lint passed.
+- API build passed and emitted both `assets/openapi.json` and `assets/risk-kb.json`.
+- Generated build output was removed afterward.
+
+### Notes
+
+The initial npm install encountered a root-owned npm cache; the dependencies were installed successfully using a writable temporary npm cache. npm reported existing peer-dependency warnings and vulnerabilities; no audit remediation was applied.
+
+## 2026-08-19 18:28:57 UTC — Configure API CORS
+
+### Prompt given
+
+> Fix CORS for the Nx Node API. Inspect main.ts first, add cors middleware before all routes, allow http://localhost:4200, keep Swagger working. Do not modify unrelated files.
+
+### Output received
+
+Added the existing `cors` middleware before JSON parsing, Swagger UI, and all API routes, restricted to `http://localhost:4200`.
+
+### What changed
+
+- `apps/policyquote-api/src/main.ts`: imported `cors` and added `app.use(cors({ origin: 'http://localhost:4200' }))` before all routes.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Allow the Angular development application to call the Node API while preserving Swagger UI and route behavior.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API lint passed.
+- API test suite passed: 2 suites, 5 tests.
+- API build passed with both Swagger and KB assets packaged.
+
+### Notes
+
+No package changes were needed because `cors` was already a root dependency. No unrelated files were modified.

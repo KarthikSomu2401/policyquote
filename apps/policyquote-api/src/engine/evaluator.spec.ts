@@ -1,6 +1,15 @@
 import { matchesCondition } from './evaluator';
 import { describe, expect, it } from '@jest/globals';
 
+import openApiDocument from '../assets/openapi.json';
+
+describe('OpenAPI document', () => {
+  it('documents the health and quote endpoints', () => {
+    expect(openApiDocument.paths['/health'].get).toBeDefined();
+    expect(openApiDocument.paths['/policy/quote'].post).toBeDefined();
+  });
+});
+
 describe('matchesCondition', () => {
   it('matches a value outside a configured range', () => {
   const quote = {
