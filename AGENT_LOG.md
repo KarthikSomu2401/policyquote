@@ -1722,3 +1722,34 @@ Improve E2E maintainability and selector stability while keeping the tests deter
 ### Notes
 
 No application business logic, API contract, or external dependencies were changed.
+
+## 2026-08-19 21:31:32 UTC — Document PolicyQuote application
+
+### Prompt given
+
+> Update README.md to accurately document the completed PolicyQuote application. Include the Nx monorepo structure, frontend and backend prerequisites, local run commands, API and Swagger URLs, AWS SAM local Lambda commands, Docker commands if available, risk-kb.json location and configurability, frontend quote flow, Playwright E2E commands, Jest test commands, and the required AGENT_LOG.md, SOLUTION.md and agent instruction file. Keep commands concise, accurate and under five commands for the standard local startup path. Do not change application code.
+
+### Output received
+
+Replaced the generated Nx starter README with PolicyQuote-specific documentation covering workspace structure, prerequisites, three-command local startup, API and Swagger URLs, SAM targets, Docker usage, risk knowledge-base configuration, frontend flow, Jest and Playwright tasks, and required repository guidance files. Added `SOLUTION.md` because it was referenced as required but did not exist. Docker validation found that the current lockfile is not synchronized with `package.json`, so the README documents the limitation instead of claiming the image build succeeds.
+
+### What changed
+
+- `README.md`: added complete PolicyQuote setup, operation, testing, runtime, and repository-guidance documentation.
+- `SOLUTION.md`: added architecture, runtime paths, and knowledge-base operating notes.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Make the repository documentation reflect the completed application and provide reproducible local, SAM, Docker, and test workflows without changing application behavior.
+
+### Validation
+
+- `git diff --check` passed.
+- Confirmed all README-referenced repository files exist.
+- `docker build -f apps/policyquote-api/Dockerfile -t policyquote-api-doc-check .` was attempted and failed during Dockerfile `npm ci` because the lockfile is missing `yaml@2.9.0` and `@swc/helpers@0.5.23` entries.
+- No application tests or builds were run because the request was documentation-only.
+
+### Notes
+
+The standard local setup uses `npm install` because the current lockfile mismatch prevents a clean `npm ci`. No application source files were modified.

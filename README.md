@@ -1,117 +1,118 @@
-# New Nx Repository
+# PolicyQuote
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+PolicyQuote is an Nx monorepo containing an Angular frontend and a Node.js/Express API for generating illustrative home insurance quotes. The API can also run as an AWS Lambda through AWS SAM.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## Repository structure
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/docs/technologies/typescript/introduction?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-🚀 If you haven't connected to Nx Cloud yet, [complete your setup here](https://cloud.nx.app/get-started). Get faster builds with remote caching, distributed task execution, and self-healing CI. [See how your workspace can benefit](#nx-cloud).
-## Generate a library
-
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+```text
+apps/
+	policyquote-web/       Angular frontend
+	policyquote-api/       Express API and Lambda handler
+	policyquote-web-e2e/   Playwright browser tests
+packages/                Shared workspace packages
+template.yaml            AWS SAM local Lambda template
+SOLUTION.md              Architecture and operating notes
+AGENT_LOG.md             Required Copilot change log
+.github/
+	copilot-instructions.md Required repository agent instructions
 ```
 
-## Run tasks
+Nx project names are `policyquote-web`, `policyquote-api`, and `policyquote-web-e2e`. Run commands from the repository root.
 
-To build the library use:
+## Prerequisites
+
+- Node.js 20 or newer and npm.
+- Docker Desktop for AWS SAM local execution or the optional API container.
+- AWS SAM CLI for local Lambda invocation and the SAM API emulator.
+- Playwright browser binaries for E2E tests. Install them with `npx playwright install` when needed.
+
+Install workspace dependencies:
 
 ```sh
-npx nx run pkg1:build
+npm install
 ```
 
-To run any task with Nx use:
+## Local development
+
+Use three terminal commands for the standard local path:
 
 ```sh
-npx nx run <project-name>:<target>
+npm install
+npx nx serve policyquote-api
+npx nx serve policyquote-web
 ```
 
-## Run PolicyQuote E2E tests
+The Angular frontend runs at <http://localhost:4200> and calls the API at <http://localhost:3000>. The API serves:
 
-Run the deterministic Playwright suite for the frontend with:
+- Health check: <http://localhost:3000/health>
+- Swagger UI: <http://localhost:3000/api-docs>
+- Quote endpoint: `POST http://localhost:3000/policy/quote`
+
+The frontend quote flow is: open the landing page, select **Enquire Quote**, complete customer and property details, submit **Get quote**, then review the annual premium, monthly estimate, risk band, score, and applied risk factors. The frontend E2E suite mocks the quote endpoint and does not require the backend.
+
+## API tasks
+
+```sh
+npx nx build policyquote-api
+npx nx typecheck policyquote-api
+npx nx lint policyquote-api
+npx nx test policyquote-api
+```
+
+The API validates quote requests and returns `400` for invalid input. Its local Express server listens on port `3000`.
+
+## AWS SAM local
+
+The SAM template is [template.yaml](template.yaml). The Nx SAM targets build the Lambda-compatible handler before invoking it:
+
+```sh
+npx nx run policyquote-api:sam-build
+npx nx run policyquote-api:sam-invoke
+npx nx run policyquote-api:sam-start-api
+```
+
+`sam-invoke` uses [apps/policyquote-api/events/quote.json](apps/policyquote-api/events/quote.json). `sam-start-api` exposes the local API on the SAM default URL, normally <http://127.0.0.1:3000>.
+
+## Docker
+
+An API image definition is available at [apps/policyquote-api/Dockerfile](apps/policyquote-api/Dockerfile):
+
+```sh
+docker build -f apps/policyquote-api/Dockerfile -t policyquote-api .
+docker run --rm -p 3000:3000 policyquote-api
+```
+
+The container exposes port `3000`, with Swagger at `/api-docs` and the quote endpoint at `/policy/quote`. The current Dockerfile runs `npm ci`; at this checkout the lockfile is not synchronized with `package.json`, so the image build requires the lockfile to be synchronized first. The failed build reports missing `yaml@2.9.0` and `@swc/helpers@0.5.23` entries.
+
+## Risk knowledge base
+
+The source knowledge base is [apps/policyquote-api/src/assets/risk-kb.json](apps/policyquote-api/src/assets/risk-kb.json). The API loads it from its bundled `assets/risk-kb.json` at runtime. SAM and generated build outputs also contain copies under `apps/policyquote-api/sam-dist/assets/` or the active build output directory.
+
+Edit the source JSON to configure risk bands, risk factors, conditions, and pricing inputs. The knowledge-base schema validates the file when the API starts or handles a health/quote request. Rebuild the API, SAM output, or Docker image after changing it; there is no runtime environment-variable override for this file.
+
+## Frontend tests
+
+Run Angular unit tests with Jest:
+
+```sh
+npx nx test policyquote-web
+npx nx test policyquote-web --runInBand
+```
+
+Run the deterministic Playwright suite:
 
 ```sh
 npx nx e2e policyquote-web-e2e
+npx nx typecheck policyquote-web-e2e
+npx nx lint policyquote-web-e2e
 ```
 
-The e2e target starts `policyquote-web` automatically and mocks `POST /policy/quote`, so the tests do not require the local backend.
+The suite is split into [landing-page.spec.ts](apps/policyquote-web-e2e/src/landing-page.spec.ts) and [quote-form.spec.ts](apps/policyquote-web-e2e/src/quote-form.spec.ts), with shared helpers in [support/policyquote.ts](apps/policyquote-web-e2e/src/support/policyquote.ts). It uses stable `data-testid` hooks for form controls and mocks `POST /policy/quote` with the existing API response contract.
 
-These targets are either [inferred automatically](https://nx.dev/docs/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+## Required repository guidance
 
-[More about running tasks in the docs &raquo;](https://nx.dev/docs/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- [AGENT_LOG.md](AGENT_LOG.md) records every meaningful Copilot repository change, its validation, and changed files.
+- [SOLUTION.md](SOLUTION.md) records the application architecture, runtime paths, and implementation decisions.
+- [.github/copilot-instructions.md](.github/copilot-instructions.md) contains the repository instructions for Copilot sessions, including mandatory activity logging.
 
-## Versioning and releasing
-
-To version and release the library use
-
-```
-npx nx release
-```
-
-Pass `--dry-run` to see what would happen without actually releasing the library.
-
-[Learn more about Nx release &raquo;](https://nx.dev/docs/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
-```
-
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
-
-```sh
-npx nx sync:check
-```
-
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
-
-## Nx Cloud
-
-Nx Cloud ensures a [fast and scalable CI](https://nx.dev/nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/docs/features/ci-features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/docs/features/ci-features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/docs/features/ci-features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/docs/features/ci-features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Set up CI (non-Github Actions CI)
-
-**Note:** This is only required if your CI provider is not GitHub Actions.
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/docs/features/ci-features?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/docs/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## 🔗 Learn More
-
-- [Nx Documentation](https://nx.dev/docs)
-- [Crafting Your Workspace Tutorial](https://nx.dev/docs/getting-started/tutorials/crafting-your-workspace)
-- [Module Boundaries](https://nx.dev/docs/features/enforce-module-boundaries)
-- [Releasing Packages](https://nx.dev/docs/features/manage-releases)
-- [Nx Plugins](https://nx.dev/docs/concepts/nx-plugins)
-- [Nx Cloud](https://nx.dev/nx-cloud)
-
-## 💬 Community
-
-Join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [X (Twitter)](https://twitter.com/nxdevtools)
-- [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [YouTube](https://www.youtube.com/@nxdevtools)
-- [Blog](https://nx.dev/blog)
+Keep these files in place when changing the repository. Do not place secrets, tokens, or private keys in documentation or logs.
