@@ -71,6 +71,16 @@
         "value": 750000
       },
       "points": 25
+    },
+    {
+      "id": "postcode_flood_zone",
+      "description": "Postcode starts with EX — flood zone risk",
+      "condition": {
+        "field": "postcode",
+        "operator": "starts_with",
+        "value": "EX"
+      },
+      "points": 15
     }
   ]
 }

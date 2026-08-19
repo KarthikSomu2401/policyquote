@@ -11,7 +11,8 @@ type ConditionField =
   | 'age'
   | 'previousClaims'
   | 'propertyType'
-  | 'propertyValue';
+  | 'propertyValue'
+  | 'postcode';
 
 export type Condition =
   | {

@@ -608,3 +608,37 @@ Ensure backend API changes carry focused tests and provide a separate, controlle
 ### Notes
 
 Skills are on-demand workflows; caveman mode activates when the skill is invoked or explicitly requested.
+
+## 2026-08-19 18:21:01 UTC — Add postcode flood-zone KB factor
+
+### Prompt given
+
+> Add the generic starts_with operator to the condition types, evaluator registry and tests. Then add the postcode_flood_zone factor to risk-kb.json with 15 points for postcodes starting with EX. Do not add postcode-specific scoring code or modify the risk engine.
+
+### Output received
+
+Added the generic `starts_with` condition coverage and a data-driven `postcode_flood_zone` factor configured for the `EX` prefix and 15 points. No postcode-specific evaluator or risk-engine branch was added.
+
+### What changed
+
+- `apps/policyquote-api/src/schema/condition.schema.ts`: added `postcode` as a generic condition field.
+- `apps/policyquote-api/src/schema/quote-request.schema.ts`: added optional postcode input support.
+- `apps/policyquote-api/src/engine/evaluator.spec.ts`: added generic prefix-matching coverage.
+- `apps/policyquote-api/src/assets/risk-kb.json`: added `postcode_flood_zone` with `starts_with: "EX"` and 15 points.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Represent the postcode factor entirely as KB data while reusing the generic `starts_with` evaluator.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 2 suites, 4 tests.
+- API lint passed.
+- Verified the KB factor has the exact `EX` prefix and 15 points.
+- Confirmed no postcode-specific scoring code was added.
+
+### Notes
+
+The existing generic `starts_with` operator and registry handler were preserved; no risk-engine changes were made.

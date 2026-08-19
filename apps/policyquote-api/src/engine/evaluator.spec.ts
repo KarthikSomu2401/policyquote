@@ -20,4 +20,23 @@ describe('matchesCondition', () => {
     })
   ).toBe(true);
   });
+
+  it('matches a string prefix using starts_with', () => {
+    expect(
+      matchesCondition(
+        {
+          customerName: 'Karthik',
+          propertyValue: 400000,
+          age: 40,
+          propertyType: 'House',
+          postcode: 'EX1 2AB',
+        },
+        {
+          field: 'postcode',
+          operator: 'starts_with',
+          value: 'EX',
+        },
+      ),
+    ).toBe(true);
+  });
 });
