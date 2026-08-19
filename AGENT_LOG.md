@@ -775,3 +775,100 @@ Keep risk-related types together while preserving the existing `KnowledgeBase` c
 ### Notes
 
 No runtime behavior changed.
+
+## 2026-08-19 18:46:15 UTC — Refactor risk evaluator registry
+
+### Prompt given
+
+> Refactor the risk evaluator to use a generic, exhaustive operator registry instead of factor-specific logic or a switch statement. Support outside_range, between, gte, eq and gt. Add focused evaluator tests and update AGENT_LOG.md
+
+### Output received
+
+Kept the generic exhaustive operator registry, tightened the discriminated condition types, and expanded focused evaluator coverage for `outside_range`, `between`, `gte`, `eq`, and `gt`.
+
+### What changed
+
+- `apps/policyquote-api/src/engine/evaluator.ts`: retained the generic registry and added safe property narrowing for union conditions.
+- `apps/policyquote-api/src/schema/condition.schema.ts`: aligned condition variants with operator-specific fields.
+- `apps/policyquote-api/src/engine/evaluator.spec.ts`: added focused tests for all requested operators.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Ensure risk evaluation is generic, exhaustive, and tested without factor-specific branches or a switch statement.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 3 suites, 12 tests.
+- API lint passed.
+
+### Notes
+
+Existing `lt` and `starts_with` support was preserved for compatibility with the current condition contract and KB.
+
+## 2026-08-19 18:48:28 UTC — Rename evaluator to risk-evaluator
+
+### Prompt given
+
+> change evaluator to risk-evaluator and also update the type and interface accordingly. And also re-use the type or interface in possible places. Cuz, I do see there are some string being used instead of type.
+
+### Output received
+
+Renamed the evaluator module to `risk-evaluator`, updated all imports, exported the reusable `ConditionEvaluator` type, exported `ConditionField`, and removed redundant string-based condition fields from `RiskFactor`.
+
+### What changed
+
+- `apps/policyquote-api/src/engine/risk-evaluator.ts`: renamed evaluator implementation and exported `ConditionEvaluator`.
+- `apps/policyquote-api/src/engine/evaluator.ts`: removed after the module rename.
+- `apps/policyquote-api/src/engine/evaluator.spec.ts`: updated the import to `risk-evaluator`.
+- `apps/policyquote-api/src/service/quote.service.ts`: updated the evaluator import.
+- `apps/policyquote-api/src/schema/condition.schema.ts`: exported `ConditionField` for reuse.
+- `apps/policyquote-api/src/schema/risk.schema.ts`: removed duplicate `field`, `operator`, and `value` declarations.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Use risk-focused naming and make the condition/evaluator types the single source of truth instead of duplicating string literals.
+
+### Validation
+
+- Confirmed no stale evaluator imports remain.
+- API production and test TypeScript checks passed.
+- API test suite passed: 3 suites, 12 tests.
+- API lint passed.
+
+### Notes
+
+No risk-engine behavior was changed.
+
+## 2026-08-19 18:51:46 UTC — Refactor condition interfaces
+
+### Prompt given
+
+> Condition itself is a union of 3 interface. So make those changes and similarly check other possible changes like new type or interfaces
+
+### Output received
+
+Refactored `Condition` into three named interfaces: `NumericCondition`, `RangeCondition`, and `ValueCondition`. Also introduced and reused `RiskBandName` for the fixed knowledge-base band keys.
+
+### What changed
+
+- `apps/policyquote-api/src/schema/condition.schema.ts`: replaced inline union members with three named interfaces and the `Condition` union.
+- `apps/policyquote-api/src/schema/risk.schema.ts`: added the reusable `RiskBandName` type.
+- `apps/policyquote-api/src/schema/knowledgebase.schema.ts`: changed `riskBands` to `Record<RiskBandName, RiskBand>`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Make condition shapes explicit and reusable while preventing arbitrary risk-band keys in the knowledge-base contract.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 3 suites, 12 tests.
+- API lint passed.
+
+### Notes
+
+No evaluator or risk-engine behavior changed.

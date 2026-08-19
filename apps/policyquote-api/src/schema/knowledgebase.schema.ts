@@ -1,9 +1,9 @@
-import type { RiskBand, RiskFactor } from './risk.schema';
+import type { RiskBand, RiskBandName, RiskFactor } from './risk.schema';
 
 export interface KnowledgeBase {
   version: string;
   basePremium: number;
   coverageLoadFactor: number;
-  riskBands: Record<string, RiskBand>;
+  riskBands: Record<RiskBandName, RiskBand>;
   factors: RiskFactor[];
 }
