@@ -73,3 +73,66 @@ Place the backend application under the monorepo's `apps` directory and keep all
 ### Notes
 
 Generated `apps/backend/dist` output was removed after validation. Existing unrelated worktree changes were preserved.
+
+## 2026-08-19 — Simplify Nx TypeScript configuration
+
+### Prompt given
+
+> Fix my Nx monorepo TypeScript config so Angular generators work. Remove project references and use a simple base + root + per-project tsconfig layout that supports both Angular and Node apps. Choose standard, widely supported module and moduleResolution values
+
+### Output received
+
+Replaced the NodeNext/composite project-reference setup with a simple inherited TypeScript configuration. The shared base now uses `module: "es2022"` and `moduleResolution: "bundler"`; the root config contains no project references; and the backend project config is self-contained.
+
+### What changed
+
+- `tsconfig.base.json`: removed composite/declaration-only settings and NodeNext resolution; added neutral ES2022/bundler settings and shared strict compiler options.
+- `tsconfig.json`: retained base inheritance and removed the root project reference list.
+- `apps/backend/tsconfig.json`: changed to a project-level config extending the root without references.
+- `apps/backend/tsconfig.app.json`: changed to inherit from the backend project config and retain app output settings.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Make Angular generators compatible with the workspace while keeping a straightforward base, root, and per-project configuration hierarchy for both Angular and Node applications.
+
+### Validation
+
+- `npx tsc -p apps/backend/tsconfig.json --noEmit` passed.
+- `npx nx build @org/backend --configuration=development` passed.
+- `npx nx g @nx/angular:application apps/frontend --dry-run --no-interactive --skipFormat --unitTestRunner=none --e2eTestRunner=none` passed without creating files.
+- Confirmed no TypeScript `references`, `composite`, or `NodeNext` settings remain.
+
+### Notes
+
+Existing unrelated worktree changes were preserved.
+
+## 2026-08-19 — Keep underwriting KB backend-owned
+
+### Prompt given
+
+> The KB belongs to the backend because it is an internal deterministic underwriting configuration. The frontend receives only the calculated result and human-readable applied-factor descriptions, so it cannot be used to inspect or alter the pricing logic
+
+### Output received
+
+Moved `risk-kb.json` into the backend asset directory without changing its contents. No frontend files or pricing logic were added or modified.
+
+### What changed
+
+- `apps/backend/src/assets/risk-kb.json`: moved the underwriting knowledge base here so it remains backend-owned and is included by the existing backend asset configuration.
+- `risk-kb.json`: removed from the repository root.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Keep deterministic underwriting configuration out of frontend-visible files while allowing the backend to use human-readable applied-factor descriptions in calculated responses.
+
+### Validation
+
+- Verified the KB JSON contents were preserved during the move.
+- Verified the backend already includes `apps/backend/src/assets` in its build assets.
+- Confirmed no frontend references or existing KB consumers were present.
+
+### Notes
+
+None.
