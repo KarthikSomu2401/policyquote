@@ -1,0 +1,6 @@
+{
+  "chat.useCustomAgentHooks": true,
+  "chat.hookFilesLocations": [
+    ".github/hooks"
+  ]
+}
