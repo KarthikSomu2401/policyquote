@@ -1039,3 +1039,33 @@ Make both direct Nx commands and root npm scripts resolve consistently while avo
 ### Notes
 
 SAM CLI remains unavailable in the environment, so executing the registered SAM commands still requires installing SAM CLI locally. The prior error is now target configuration, not Nx target discovery.
+
+## 2026-08-19 19:33:53 UTC — Fix SAM local Lambda 500
+
+### Prompt given
+
+> https://127.0.0.1:3000/health nor https://127.0.0.1:3000/api-docs working?
+
+### Output received
+
+Diagnosed the endpoint failure as two separate issues: SAM serves plain HTTP, not HTTPS, and the running Lambda bundle omitted the `serverless-http` runtime dependency. Enabled third-party dependency bundling for the SAM-only Nx target and restarted the stale SAM process.
+
+### What changed
+
+- `apps/policyquote-api/project.json`: set `thirdParty: true` for `sam-build` so runtime dependencies are included in the Lambda artifact.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+The SAM container reported `Runtime.ImportModuleError: Cannot find module 'serverless-http'`. The compiled handler worked directly, but SAM could not resolve the adapter inside `/var/task` until dependencies were bundled.
+
+### Validation
+
+- `sam local invoke` passed through Docker with the sample event and returned HTTP 200.
+- Fresh `sam local start-api` returned HTTP 200 for `http://127.0.0.1:3000/health`.
+- Fresh `sam local start-api` returned HTTP 301 for `http://127.0.0.1:3000/api-docs`.
+- Confirmed HTTPS is unsupported by the current plain HTTP SAM configuration.
+
+### Notes
+
+Use `http://127.0.0.1:3000`, not `https://127.0.0.1:3000`. Restart any existing SAM process after rebuilding so it does not continue serving an old bundle.

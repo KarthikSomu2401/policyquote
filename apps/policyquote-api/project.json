@@ -58,6 +58,7 @@
         "outputPath": "apps/policyquote-api/sam-dist",
         "format": ["cjs"],
         "bundle": true,
+        "thirdParty": true,
         "main": "apps/policyquote-api/src/handler.ts",
         "tsConfig": "apps/policyquote-api/tsconfig.app.json",
         "assets": [
