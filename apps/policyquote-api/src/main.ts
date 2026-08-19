@@ -1,14 +1,14 @@
 import express from 'express';
 
-const host = process.env.HOST ?? 'localhost';
-const port = process.env.PORT ? Number(process.env.PORT) : 3000;
-
 const app = express();
+const port = Number(process.env.PORT ?? 3000);
 
-app.get('/', (req, res) => {
-  res.send({ message: 'Hello API' });
+app.get('/health', (_request, response) => {
+  response.status(200).json({
+    status: 'ok'
+  });
 });
 
-app.listen(port, host, () => {
-  console.log(`[ ready ] http://${host}:${port}`);
+app.listen(port, () => {
+  console.log(`PolicyQuote API running on http://localhost:${port}`);
 });
