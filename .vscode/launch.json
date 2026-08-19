@@ -4,9 +4,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @org/backend with Nx",
+      "name": "Debug policyquote-api with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@org/backend"],
+      "runtimeArgs": ["nx", "serve", "policyquote-api"],
       "env": {
         "NODE_OPTIONS": "--inspect=9229"
       },
@@ -15,7 +15,7 @@
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/backend/dist/**/*.(m|c|)js",
+        "${workspaceFolder}/apps/policyquote-api/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
     }

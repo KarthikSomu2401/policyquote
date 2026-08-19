@@ -74,6 +74,157 @@ Place the backend application under the monorepo's `apps` directory and keep all
 
 Generated `apps/backend/dist` output was removed after validation. Existing unrelated worktree changes were preserved.
 
+## 2026-08-19 — Rename policyquote applications
+
+### Prompt given
+
+> I want the backend to be named as policyquote-api and frontend as policyquote-web. And everything in policyquote-web should be a standalone.
+
+### Output received
+
+Renamed the backend and frontend application directories and Nx/npm project identities to `policyquote-api` and `policyquote-web`. Renamed the e2e project to `policyquote-web-e2e`, updated all path and target references, and made the Angular components explicitly standalone.
+
+### What changed
+
+- `apps/policyquote-api/`: renamed from `apps/backend/`; package and Nx project name changed to `policyquote-api`.
+- `apps/policyquote-web/`: renamed from `apps/frontend/`; Nx project name and generated display text changed to `policyquote-web`.
+- `apps/policyquote-web-e2e/`: renamed from `apps/frontend-e2e/`; dependency and Playwright serve target updated.
+- `apps/policyquote-web/src/app/app.ts`: explicitly marked the root component standalone.
+- `apps/policyquote-web/src/app/nx-welcome.ts`: explicitly marked the generated component standalone and updated project text.
+- `apps/policyquote-web/tsconfig.json`: removed project references.
+- `apps/policyquote-api/package.json`: updated paths, project targets, package name, and added a no-emit typecheck target.
+- `package-lock.json`: updated the renamed workspace package and link.
+- `.vscode/launch.json`: updated the API debug target and output path.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Use the requested product-facing application names and ensure the web application is explicitly standalone and independent of TypeScript project references.
+
+### Validation
+
+- `npx nx show projects --json` lists `policyquote-api`, `policyquote-web`, and `policyquote-web-e2e`.
+- `npx tsc -p apps/policyquote-web/tsconfig.json --noEmit` passed.
+- `npx nx test policyquote-web --runInBand` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx nx lint policyquote-api` passed.
+- `npx nx typecheck policyquote-api` passed.
+- `npx nx build policyquote-web` passed with the existing component-style budget warning.
+- `npx nx build policyquote-api --configuration=development` passed.
+- Confirmed no old project names or paths remain.
+- Generated build output was removed afterward.
+
+### Notes
+
+Nx reports the Angular Jest executor is deprecated and recommends `nx g @nx/jest:convert-to-inferred` for a future Nx 24 migration. This was not applied because the requested rename and standalone setup are complete.
+
+## 2026-08-19 — Remove legacy web test compiler overrides
+
+### Prompt given
+
+> Update the compilerOptions and I do see module configs still there. Since the project named policyquote-web to standalone, why is the module configs are not removed yet.
+
+### Output received
+
+Removed the web test-only `commonjs`, `es2016`, and `node10` compiler overrides, then removed the remaining project-level Angular `module: "preserve"` override so `policyquote-web` inherits the shared `es2022`/`bundler` settings. Added an explicit test `rootDir` for TypeScript 6 output layout.
+
+### What changed
+
+
+### Why
+
+Keep standalone Angular configuration independent from legacy test module settings while using the workspace-standard TypeScript compiler options.
+
+### Validation
+
+
+### Notes
+
+Standalone Angular components and TypeScript module format are separate concerns; the former controls Angular component bootstrapping, while the latter controls JavaScript compilation and module loading.
+
+## 2026-08-19 — Set explicit TypeScript root directories
+
+### Prompt given
+
+> The common source directory of 'tsconfig.spec.json' is './src'. The 'rootDir' setting must be explicitly set to this or another path to adjust your output's file layout. so update the mono repo, and its respective apps to accolade with tese configurations
+
+### Output received
+
+Added explicit per-project root directories across the monorepo. Angular app, web spec, and e2e configs now use `rootDir: "."`; the Node app source config keeps `rootDir: "src"`. The e2e config also stopped overriding the shared ES2022 module setting with CommonJS and now includes Node types.
+
+### What changed
+
+- `apps/policyquote-web/tsconfig.app.json`: added `rootDir: "."`.
+- `apps/policyquote-web/tsconfig.spec.json`: retained `rootDir: "."` for test output layout.
+- `apps/policyquote-web-e2e/tsconfig.json`: added `rootDir: "."`, removed the CommonJS override, and added Node types for Playwright globals.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Make TypeScript output layouts explicit for each application and avoid common-source-directory errors while preserving the shared monorepo compiler settings.
+
+### Validation
+
+- Direct `tsc --noEmit` checks passed for API, API app, web app, web spec, and web e2e configs.
+- `npx nx build policyquote-web` passed with the existing component-style budget warning.
+- `npx nx build policyquote-api --configuration=development` passed.
+- `npx nx lint policyquote-web-e2e` passed.
+- Generated build output was removed afterward.
+
+### Notes
+
+No project references were added.
+
+## 2026-08-19 — Align app TypeScript configs with TypeScript 6
+
+### Prompt given
+
+> You are a TypeScript expert. Automatically fix the TypeScript 6+ issues in this Nx project.
+>
+> Find and update these files if they exist:
+> - tsconfig.app.json
+> - tsconfig.spec.json
+> - Any base tsconfig they extend (e.g. tsconfig.json in the same folder or workspace root)
+>
+> For tsconfig.app.json and tsconfig.spec.json:
+> - Set "rootDir": "./src" in compilerOptions.
+> - Set or keep "outDir": "./dist".
+> - Ensure "include" is ["src/**/*"].
+> - If "moduleResolution": "node10" is present, change it to "moduleResolution": "bundler".
+>   - If changing it would break the project, instead add "ignoreDeprecations": "6.0" to compilerOptions.
+> - Do not remove or break existing Nx settings like "extends", "references", or "paths".
+>
+> For any base tsconfig that defines "moduleResolution": "node10":
+> - Prefer changing it to "moduleResolution": "bundler".
+> - If it must stay as "node10", add "ignoreDeprecations": "6.0" to compilerOptions.
+
+### Output received
+
+Updated the `policyquote-web` application and spec TypeScript configs to the requested TypeScript 6 layout. Existing `extends`, `files`, and `exclude` settings were preserved, and no `node10` module resolution setting was present in the inheritance chain.
+
+### What changed
+
+- `apps/policyquote-web/tsconfig.app.json`: set `rootDir` to `./src`, `outDir` to `./dist`, and `include` to `src/**/*`.
+- `apps/policyquote-web/tsconfig.spec.json`: set `rootDir` to `./src`, `outDir` to `./dist`, and `include` to `src/**/*` while preserving the test setup file.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Make the Angular app and test configs compatible with TypeScript 6 common-source-directory requirements while retaining their existing Nx inheritance.
+
+### Validation
+
+- Direct TypeScript checks passed for app and spec configs.
+- Exact rootDir/outDir/include assertions passed.
+- Confirmed no `moduleResolution: "node10"` settings remain.
+- `npx nx test policyquote-web --runInBand` passed.
+- `npx nx build policyquote-web` passed with the existing component-style budget warning.
+- Generated build output was removed afterward.
+
+### Notes
+
+No base config changes were needed because the workspace already uses `moduleResolution: "bundler"`.
+
 ## 2026-08-19 — Reset Nx daemon state after Angular app generation
 
 ### Prompt given

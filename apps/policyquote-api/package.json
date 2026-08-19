@@ -1,9 +1,16 @@
 {
-  "name": "@org/backend",
+  "name": "policyquote-api",
   "version": "0.0.1",
   "private": true,
   "nx": {
     "targets": {
+      "typecheck": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "apps/policyquote-api",
+          "command": "tsc -p tsconfig.json --noEmit"
+        }
+      },
       "build": {
         "executor": "@nx/esbuild:esbuild",
         "outputs": [
@@ -12,15 +19,15 @@
         "defaultConfiguration": "production",
         "options": {
           "platform": "node",
-          "outputPath": "apps/backend/dist",
+          "outputPath": "apps/policyquote-api/dist",
           "format": [
             "cjs"
           ],
           "bundle": false,
-          "main": "apps/backend/src/main.ts",
-          "tsConfig": "apps/backend/tsconfig.app.json",
+          "main": "apps/policyquote-api/src/main.ts",
+          "tsConfig": "apps/policyquote-api/tsconfig.app.json",
           "assets": [
-            "apps/backend/src/assets"
+            "apps/policyquote-api/src/assets"
           ],
           "esbuildOptions": {
             "sourcemap": true,
@@ -48,8 +55,8 @@
         "cache": true,
         "executor": "@nx/js:prune-lockfile",
         "outputs": [
-          "{workspaceRoot}/apps/backend/dist/package.json",
-          "{workspaceRoot}/apps/backend/dist/package-lock.json"
+          "{workspaceRoot}/apps/policyquote-api/dist/package.json",
+          "{workspaceRoot}/apps/policyquote-api/dist/package-lock.json"
         ],
         "options": {
           "buildTarget": "build"
@@ -61,7 +68,7 @@
         ],
         "cache": true,
         "outputs": [
-          "{workspaceRoot}/apps/backend/dist/workspace_modules"
+          "{workspaceRoot}/apps/policyquote-api/dist/workspace_modules"
         ],
         "executor": "@nx/js:copy-workspace-modules",
         "options": {
@@ -83,21 +90,33 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@org/backend:build",
+          "buildTarget": "policyquote-api:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@org/backend:build:development"
+            "buildTarget": "policyquote-api:build:development"
           },
           "production": {
-            "buildTarget": "@org/backend:build:production"
+            "buildTarget": "policyquote-api:build:production"
           }
         }
       }
     }
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "zod": "^4.4.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.13.3",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.12",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.3"
   }
 }

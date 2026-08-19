@@ -3,8 +3,9 @@
   "compilerOptions": {
     "allowJs": true,
     "outDir": "../../dist/out-tsc",
+    "rootDir": ".",
     "sourceMap": false,
-    "module": "commonjs",
+    "types": ["node"],
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
