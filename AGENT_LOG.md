@@ -1328,3 +1328,160 @@ Improve readability and feedback states using only component-scoped CSS and pres
 ### Notes
 
 No external CSS/UI libraries, navigation, API calls, or form logic were added or changed.
+
+## 2026-08-19 20:27 UTC — Enhance PolicyQuote landing structure
+
+### Prompt given
+
+> Enhance the PolicyQuote landing page with a polished home-insurance marketing structure: a full-width hero using a local home image and readable overlay, original headline and supporting text, centered “Enquire Quote” CTA, a three-card “Why choose PolicyQuote?” reassurance section, and a three-step “How it works” section. Use semantic HTML, accessible headings, local assets, inline SVG or CSS-only icons, and component-scoped CSS. Do not copy AIG wording, brand assets, policy claims, layouts or customer reviews. Do not add navigation, external URLs, external styling libraries or icon libraries.
+
+### Output received
+
+Expanded `LandingComponent` into a semantic marketing page with a full-width local-image hero and readable overlay, original PolicyQuote copy, centered CTA, three reassurance cards, and a three-step process section. Added inline SVG icons and responsive component-scoped CSS without navigation, remote URLs, external libraries, copied brand material, claims, or reviews.
+
+### What changed
+
+- `apps/policyquote-web/src/app/landing.component.ts`: added the hero, reassurance, process sections, inline SVG icons, accessible headings, CTA, and responsive scoped styling.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Give the landing page a complete home-insurance marketing structure while keeping the existing quote navigation and functionality unchanged.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in the changed landing and quote components.
+- Confirmed the landing component contains no remote URLs or AIG/brand/review content.
+
+### Notes
+
+No navigation, API calls, quote logic, external CSS/UI libraries, or icon libraries were added or changed.
+
+## 2026-08-19 20:30 UTC — Enhance quote form and result presentation
+
+### Prompt given
+
+> Enhance the existing PolicyQuote form and result presentation only. Add a clear form heading, explanatory text, grouped fieldsets for customer and property details, explicit labels, required indicators, inline validation messages, loading and error states, and a back-to-home action. Improve the result card by making annual premium prominent, monthly premium secondary, retaining RiskBandBadgeComponent, showing the risk summary, coverage calculation details and applied factors with points. Add a short statement that the result is an illustrative estimate, not a binding insurance offer. Preserve existing Reactive Forms, Signals, API calls, response models and scoring logic. Use custom component-scoped CSS only and no external libraries.
+
+### Output received
+
+Enhanced only the quote form and result presentation. Added form heading/explanation, customer and property fieldsets, explicit required indicators, inline touched-invalid messages, a back-to-home router link, loading/error presentation, prominent annual and secondary monthly premium display, risk summary, coverage calculation details, applied factor points, retained RiskBandBadgeComponent, and the illustrative-estimate disclaimer.
+
+### What changed
+
+- `apps/policyquote-web/src/app/quote-form.component.ts`: added presentation-only headings, field grouping, required indicators, validation messages, and scoped CSS.
+- `apps/policyquote-web/src/app/quote.component.ts`: added the back-to-home action and scoped presentation for existing loading/error states.
+- `apps/policyquote-web/src/app/quote-result.component.ts`: added premium hierarchy, risk summary, calculation details, applied factor points, disclaimer, and scoped CSS.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Improve clarity and accessibility of the existing quote workflow without changing its form controls, validators, signals, API calls, response models, or scoring behavior.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in the changed quote components.
+- Confirmed existing `HttpClient`, `Validators`, `submitQuote`, `requestQuote`, and quote Signal symbols remain present.
+
+### Notes
+
+Monthly premium is displayed as the existing annual premium divided by 12; no response model or scoring logic was changed. No external libraries were added.
+
+## 2026-08-19 20:35 UTC — Fix landing vertical overflow
+
+### Prompt given
+
+> except id="landing-title", all other are spilling in y-axis when i change the design. It is spilling beyond the borders.
+
+### Output received
+
+Fixed the landing page viewport sizing and overflow behavior. The header and landing view now use consistent border-box sizing, the landing reserves the header height instead of adding another full viewport height, padded sections include their padding within their width, and the default browser body margin was removed.
+
+### What changed
+
+- `apps/policyquote-web/src/app/app.ts`: added root display, sizing, and minimum-height rules.
+- `apps/policyquote-web/src/app/app-header.component.ts`: made header sizing border-box safe.
+- `apps/policyquote-web/src/app/landing.component.ts`: reserved header height and constrained hero/section widths.
+- `apps/policyquote-web/src/styles.scss`: removed default body margin and added border-box reset.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Prevent cumulative viewport height and box-model calculations from causing content to spill beyond the visible page boundaries.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- Frontend editor diagnostics reported no errors in the changed files.
+
+### Notes
+
+The landing page remains vertically scrollable when its full marketing content exceeds the viewport; the fix removes unintended overflow from the shell and container sizing.
+
+## 2026-08-19 20:40 UTC — Add quote page banner
+
+### Prompt given
+
+> Enhance only the existing PolicyQuote quote page. Add a compact header image/banner below the header using a local asset, with meaningful alt text. Improve the existing page hierarchy so the title, image, form and quote result are clearly separated. Keep the current form, API integration, Signals and result data unchanged. Use semantic HTML and custom component-scoped CSS only. Do not use external styling, icon or UI libraries.
+
+### Output received
+
+Converted the existing local quote illustration into a compact semantic banner below the reusable app header. Added a readable banner caption, separated the title, banner, form, and result/status regions with semantic sections, and added responsive component-scoped layout rules. Existing form, API, Signals, and result data bindings remain unchanged.
+
+### What changed
+
+- `apps/policyquote-web/src/app/quote.component.ts`: added the compact local-image banner and semantic form/result region layout with responsive scoped CSS.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Improve the quote page hierarchy and visual separation without changing quote behavior or data flow.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in the quote component.
+
+### Notes
+
+The existing local `policyquote-quote.svg` asset and meaningful alt text are reused. No external libraries or quote logic changes were made.
+
+## 2026-08-19 20:43 UTC — Refine quote form and result cards
+
+### Prompt given
+
+> Improve only the existing quote form and result card layout. Group fields into clear sections, align labels and controls consistently, make required and validation states readable, and visually prioritise the annual premium, monthly premium, risk badge, risk summary and applied factors. Keep the existing Reactive Form, Signals, API response and component structure unchanged. Use only custom component-scoped CSS; do not install external libraries.
+
+### Output received
+
+Refined only component-scoped CSS for the quote form and result card. Added contained form/card surfaces, clearer fieldset grouping, aligned label/control rhythm, readable validation spacing, stronger annual/monthly premium hierarchy, distinct risk summary/calculation/factor panels, and safer narrow-screen text handling.
+
+### What changed
+
+- `apps/policyquote-web/src/app/quote-form.component.ts`: refined form card, fieldset, label, control, validation, and action styling.
+- `apps/policyquote-web/src/app/quote-result.component.ts`: refined premium, summary, calculation, factor list, and back-home button styling.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Improve readability and visual hierarchy while preserving the existing Reactive Form, Signals, API response, component structure, and quote behavior.
+
+### Validation
+
+- `npx nx build policyquote-web --configuration=development` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed.
+- Frontend editor diagnostics reported no errors in the changed components.
+
+### Notes
+
+No external libraries, API changes, form logic changes, signal changes, or response model changes were made.
