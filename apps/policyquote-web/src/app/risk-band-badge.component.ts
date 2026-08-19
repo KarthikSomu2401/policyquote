@@ -30,7 +30,7 @@ import { RiskBandName } from './quote.types';
     }
   `,
   template: `
-    <span [attr.data-risk-band]="riskBand()">{{ riskBand() }}</span>
+    <span data-testid="risk-band" [attr.data-risk-band]="riskBand()">{{ riskBand() }}</span>
   `,
 })
 export class RiskBandBadgeComponent {

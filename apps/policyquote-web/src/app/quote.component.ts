@@ -10,7 +10,7 @@ import { QuoteRequest, QuoteResult } from './quote.types';
   imports: [QuoteFormComponent, QuoteResultComponent],
   styleUrl: './quote.component.scss',
   template: `
-    <section class="quote-page" aria-labelledby="quote-title">
+    <section class="quote-page" data-testid="quote-page" aria-labelledby="quote-title">
       <h1 id="quote-title">Quote</h1>
 
       <section class="quote-banner" aria-label="Home insurance quote preparation">
@@ -27,17 +27,17 @@ import { QuoteRequest, QuoteResult } from './quote.types';
       </section>
 
       <div class="quote-content">
-        <section class="quote-form-panel" aria-label="Quote request form">
+        <section class="quote-form-panel" data-testid="quote-form-panel" aria-label="Quote request form">
           <app-quote-form (submitted)="requestQuote($event)" />
         </section>
 
-        <section class="quote-feedback" aria-label="Quote result and request status">
+        <section class="quote-feedback" data-testid="quote-feedback" aria-label="Quote result and request status">
           @if (loading()) {
-            <p class="loading" role="status">Loading quote...</p>
+            <p class="loading" data-testid="quote-loading" role="status">Loading quote...</p>
           }
 
           @if (errorMessage(); as message) {
-            <p class="error" role="alert">{{ message }}</p>
+            <p class="error" data-testid="quote-error" role="alert">{{ message }}</p>
           }
 
           @if (quoteResult(); as result) {

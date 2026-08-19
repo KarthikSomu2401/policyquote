@@ -34,6 +34,45 @@ Keep only the repository's GitHub Copilot setup and audit log while removing oth
 
 ### Notes
 
+No additional production behavior was changed.
+
+## 2026-08-19 21:23:24 UTC — Add PolicyQuote UI test IDs
+
+### Prompt given
+
+> add test-id to the policyquote-web project and Give me the list of ui elements which i can add to the e2e tests
+
+### Output received
+
+Added stable `data-testid` attributes to the PolicyQuote web header, landing page, quote form fields and validation messages, quote request states, result summaries, coverage calculation, risk factors, and risk-band badge. Updated the shared Playwright form helper to use the field test IDs.
+
+### What changed
+
+- `apps/policyquote-web/src/app/app-header.component.ts`: added header and brand-link test IDs.
+- `apps/policyquote-web/src/app/landing.component.ts`: added landing-page, landing-CTA, and section test IDs.
+- `apps/policyquote-web/src/app/quote-form.component.ts`: added form, field, validation-message, and submit-button test IDs.
+- `apps/policyquote-web/src/app/quote.component.ts`: added quote-page, form-panel, feedback, loading, and error test IDs.
+- `apps/policyquote-web/src/app/quote-result.component.ts`: added result, premium, risk-summary, calculation, and risk-factor test IDs.
+- `apps/policyquote-web/src/app/risk-band-badge.component.ts`: added the risk-band test ID.
+- `apps/policyquote-web-e2e/src/policyquote.spec.ts`: changed the form helper to use `getByTestId` for stable field selection.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Provide stable selectors for UI E2E tests while preserving accessible role and label locators for user-facing interactions.
+
+### Validation
+
+- Editor diagnostics reported no errors in all edited TypeScript files.
+- `npm run policyquote-web-e2e:typecheck` passed.
+- `npm run policyquote-web:build` passed with the existing `nx-welcome.ts` style-budget warning.
+- `npm run policyquote-web:test -- --runInBand` was attempted but all six suites were blocked before test execution by the existing Jest runtime error `this._moduleMocker.clearMocksOnScope is not a function`.
+- `npm run policyquote-web-e2e:e2e -- --project=chromium` was attempted; browser execution did not complete because the configured static server does not rewrite `/quote` to the SPA entry point and parallel browser startup produced connection resets.
+
+### Notes
+
+Available hooks are listed in the final response by page, form, request state, and result state. Existing unrelated changes, including `apps/policyquote-web-e2e/playwright.config.mts`, were preserved.
+
 None.
 
 ## 2026-08-19 00:10:00 UTC — Move backend application to apps

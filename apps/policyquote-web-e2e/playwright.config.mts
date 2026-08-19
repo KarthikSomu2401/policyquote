@@ -32,7 +32,7 @@ export default defineConfig({
   },
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npx nx run policyquote-web:serve-static',
+    command: 'npx nx build policyquote-web --configuration=production && npx http-server dist/apps/policyquote-web/browser -p 4200 -c-1',
     url: 'http://localhost:4200',
     reuseExistingServer: true,
     cwd: workspaceRoot

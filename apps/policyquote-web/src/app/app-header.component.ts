@@ -5,8 +5,8 @@ import { Component } from '@angular/core';
   selector: 'app-header',
   styleUrl: './app-header.component.scss',
   template: `
-    <header>
-      <a class="brand" href="/" aria-label="PolicyQuote home">PolicyQuote</a>
+    <header data-testid="app-header">
+      <a class="brand" data-testid="brand-link" href="/" aria-label="PolicyQuote home">PolicyQuote</a>
     </header>
   `,
 })

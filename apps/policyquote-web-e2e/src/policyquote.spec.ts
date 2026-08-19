@@ -28,12 +28,12 @@ const quoteResponse = {
 };
 
 async function fillQuoteForm(page: Page): Promise<void> {
-  await page.getByLabel('Customer name').fill(quoteRequest.customerName);
-  await page.getByLabel('Age').fill(String(quoteRequest.age));
-  await page.getByLabel('Property type').selectOption(quoteRequest.propertyType);
-  await page.getByLabel('Property value').fill(String(quoteRequest.propertyValue));
-  await page.getByLabel('Postcode').fill(quoteRequest.postcode);
-  await page.getByLabel('Previous claims').fill(String(quoteRequest.previousClaims));
+  await page.getByTestId('customer-name-input').fill(quoteRequest.customerName);
+  await page.getByTestId('age-input').fill(String(quoteRequest.age));
+  await page.getByTestId('property-type-select').selectOption(quoteRequest.propertyType);
+  await page.getByTestId('property-value-input').fill(String(quoteRequest.propertyValue));
+  await page.getByTestId('postcode-input').fill(quoteRequest.postcode);
+  await page.getByTestId('previous-claims-input').fill(String(quoteRequest.previousClaims));
 }
 
 async function mockQuoteSuccess(page: Page): Promise<void> {

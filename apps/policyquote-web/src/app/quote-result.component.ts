@@ -9,22 +9,22 @@ import { QuoteResult } from './quote.types';
   imports: [CurrencyFormatPipe, RiskBandBadgeComponent],
   styleUrl: './quote-result.component.scss',
   template: `
-    <section aria-labelledby="quote-result-title">
+    <section data-testid="quote-result" aria-labelledby="quote-result-title">
       <h2 id="quote-result-title">Quote result</h2>
-      <div class="premium-summary">
+      <div class="premium-summary" data-testid="premium-summary">
         <p class="premium-label">Annual premium</p>
-        <p class="premium-amount">{{ result().annualPremium | currencyFormat }}</p>
-        <p class="monthly-premium">Approx. monthly premium: {{ result().annualPremium / 12 | currencyFormat }}</p>
+        <p class="premium-amount" data-testid="annual-premium">{{ result().annualPremium | currencyFormat }}</p>
+        <p class="monthly-premium" data-testid="monthly-premium">Approx. monthly premium: {{ result().annualPremium / 12 | currencyFormat }}</p>
       </div>
 
-      <div class="summary" aria-labelledby="risk-summary-title">
+      <div class="summary" data-testid="risk-summary" aria-labelledby="risk-summary-title">
         <h3 id="risk-summary-title">Risk summary</h3>
         <p>Customer: {{ result().customerName }}</p>
         <p>Risk score: {{ result().riskScore }}</p>
         <p>Risk band: <app-risk-band-badge [riskScore]="result().riskScore" /></p>
       </div>
 
-      <div class="calculation">
+      <div class="calculation" data-testid="coverage-calculation">
         <h3>Coverage calculation</h3>
         <dl>
           <dt>Annual estimate</dt>
@@ -37,7 +37,7 @@ import { QuoteResult } from './quote.types';
         <p class="estimate-note">This is an illustrative estimate, not a binding insurance offer.</p>
       </div>
 
-      <div class="risk-factors">
+      <div class="risk-factors" data-testid="risk-factors">
         <h3>Risk factors</h3>
         @if (result().appliedFactors.length > 0) {
           <ul>

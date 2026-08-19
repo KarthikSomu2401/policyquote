@@ -22,7 +22,7 @@ type QuoteForm = {
   imports: [ReactiveFormsModule],
   styleUrl: './quote-form.component.scss',
   template: `
-    <form [formGroup]="quoteForm" (ngSubmit)="submitQuote()" novalidate>
+    <form data-testid="quote-form" [formGroup]="quoteForm" (ngSubmit)="submitQuote()" novalidate>
       <div>
         <h2 class="form-heading">Tell us about your home</h2>
         <p class="form-intro">Enter a few details so we can prepare an illustrative estimate.</p>
@@ -36,6 +36,7 @@ type QuoteForm = {
           <label for="customerName">Customer name <span class="required-indicator" aria-hidden="true">*</span></label>
           <input
             id="customerName"
+            data-testid="customer-name-input"
             type="text"
             formControlName="customerName"
             [attr.aria-invalid]="quoteForm.controls.customerName.invalid && quoteForm.controls.customerName.touched"
@@ -43,7 +44,7 @@ type QuoteForm = {
             [attr.aria-describedby]="quoteForm.controls.customerName.invalid && quoteForm.controls.customerName.touched ? 'customerName-error' : null"
           />
           @if (quoteForm.controls.customerName.invalid && quoteForm.controls.customerName.touched) {
-            <span class="validation-message" id="customerName-error">Customer name is required.</span>
+            <span class="validation-message" data-testid="customer-name-error" id="customerName-error">Customer name is required.</span>
           }
         </div>
 
@@ -51,6 +52,7 @@ type QuoteForm = {
           <label for="age">Age <span class="required-indicator" aria-hidden="true">*</span></label>
           <input
             id="age"
+            data-testid="age-input"
             type="number"
             formControlName="age"
             [attr.aria-invalid]="quoteForm.controls.age.invalid && quoteForm.controls.age.touched"
@@ -58,7 +60,7 @@ type QuoteForm = {
             [attr.aria-describedby]="quoteForm.controls.age.invalid && quoteForm.controls.age.touched ? 'age-error' : null"
           />
           @if (quoteForm.controls.age.invalid && quoteForm.controls.age.touched) {
-            <span class="validation-message" id="age-error">Age is required.</span>
+            <span class="validation-message" data-testid="age-error" id="age-error">Age is required.</span>
           }
         </div>
 
@@ -71,6 +73,7 @@ type QuoteForm = {
           <label for="propertyType">Property type <span class="required-indicator" aria-hidden="true">*</span></label>
           <select
             id="propertyType"
+            data-testid="property-type-select"
             formControlName="propertyType"
             [attr.aria-invalid]="quoteForm.controls.propertyType.invalid && quoteForm.controls.propertyType.touched"
             aria-required="true"
@@ -82,7 +85,7 @@ type QuoteForm = {
             <option value="Bungalow">Bungalow</option>
           </select>
           @if (quoteForm.controls.propertyType.invalid && quoteForm.controls.propertyType.touched) {
-            <span class="validation-message" id="propertyType-error">Property type is required.</span>
+            <span class="validation-message" data-testid="property-type-error" id="propertyType-error">Property type is required.</span>
           }
         </div>
 
@@ -90,6 +93,7 @@ type QuoteForm = {
           <label for="propertyValue">Property value <span class="required-indicator" aria-hidden="true">*</span></label>
           <input
             id="propertyValue"
+            data-testid="property-value-input"
             type="number"
             formControlName="propertyValue"
             [attr.aria-invalid]="quoteForm.controls.propertyValue.invalid && quoteForm.controls.propertyValue.touched"
@@ -97,7 +101,7 @@ type QuoteForm = {
             [attr.aria-describedby]="quoteForm.controls.propertyValue.invalid && quoteForm.controls.propertyValue.touched ? 'propertyValue-error' : null"
           />
           @if (quoteForm.controls.propertyValue.invalid && quoteForm.controls.propertyValue.touched) {
-            <span class="validation-message" id="propertyValue-error">Property value is required.</span>
+            <span class="validation-message" data-testid="property-value-error" id="propertyValue-error">Property value is required.</span>
           }
         </div>
 
@@ -105,6 +109,7 @@ type QuoteForm = {
           <label for="postcode">Postcode <span class="required-indicator" aria-hidden="true">*</span></label>
           <input
             id="postcode"
+            data-testid="postcode-input"
             type="text"
             formControlName="postcode"
             [attr.aria-invalid]="quoteForm.controls.postcode.invalid && quoteForm.controls.postcode.touched"
@@ -112,7 +117,7 @@ type QuoteForm = {
             [attr.aria-describedby]="quoteForm.controls.postcode.invalid && quoteForm.controls.postcode.touched ? 'postcode-error' : null"
           />
           @if (quoteForm.controls.postcode.invalid && quoteForm.controls.postcode.touched) {
-            <span class="validation-message" id="postcode-error">Postcode is required.</span>
+            <span class="validation-message" data-testid="postcode-error" id="postcode-error">Postcode is required.</span>
           }
         </div>
 
@@ -120,6 +125,7 @@ type QuoteForm = {
           <label for="previousClaims">Previous claims <span class="required-indicator" aria-hidden="true">*</span></label>
           <input
             id="previousClaims"
+            data-testid="previous-claims-input"
             type="number"
             formControlName="previousClaims"
             [attr.aria-invalid]="quoteForm.controls.previousClaims.invalid && quoteForm.controls.previousClaims.touched"
@@ -127,12 +133,12 @@ type QuoteForm = {
             [attr.aria-describedby]="quoteForm.controls.previousClaims.invalid && quoteForm.controls.previousClaims.touched ? 'previousClaims-error' : null"
           />
           @if (quoteForm.controls.previousClaims.invalid && quoteForm.controls.previousClaims.touched) {
-            <span class="validation-message" id="previousClaims-error">Previous claims is required.</span>
+            <span class="validation-message" data-testid="previous-claims-error" id="previousClaims-error">Previous claims is required.</span>
           }
         </div>
       </fieldset>
 
-      <button type="submit">Get quote</button>
+      <button type="submit" data-testid="get-quote-button">Get quote</button>
     </form>
   `,
 })

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   selector: 'app-landing',
   styleUrl: './landing.component.scss',
   template: `
-    <main>
+    <main data-testid="landing-page">
       <section class="hero" aria-labelledby="landing-title">
         <img
           class="hero-image"
@@ -19,11 +19,11 @@ import { Router } from '@angular/router';
         <div class="hero-content">
           <h1 id="landing-title">A clearer way to protect home</h1>
           <p>PolicyQuote helps you gather the right details and understand your home insurance quote.</p>
-          <button type="button" (click)="openQuote()">Enquire Quote</button>
+          <button type="button" data-testid="landing-cta" (click)="openQuote()">Enquire Quote</button>
         </div>
       </section>
 
-      <section class="section" aria-labelledby="why-title">
+      <section class="section" data-testid="why-section" aria-labelledby="why-title">
         <h2 class="section-heading" id="why-title">Why choose PolicyQuote?</h2>
         <p class="section-intro">A straightforward starting point for thinking about cover for the home you care about.</p>
 
@@ -48,7 +48,7 @@ import { Router } from '@angular/router';
         </div>
       </section>
 
-      <section class="section" aria-labelledby="how-title">
+      <section class="section" data-testid="how-it-works-section" aria-labelledby="how-title">
         <h2 class="section-heading" id="how-title">How it works</h2>
         <ol class="steps">
           <li class="step">
