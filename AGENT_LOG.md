@@ -2,38 +2,9 @@
 
 This file records significant interactions with Copilot Chat, Agent Chat, and Inline Chat in this repository.
 
-Entries are append-only and chronological. Timestamps use `YYYY-MM-DD HH:mm:ss UTC`. Historical entries that originally contained only a date use `00:00:00 UTC` because their exact time was unavailable. Secrets and sensitive values must be redacted.
+Entries are chronological. Timestamps use `YYYY-MM-DD HH:mm:ss UTC`. Historical entries use ordered dummy timestamps because their exact times were unavailable. Secrets and sensitive values must be redacted.
 
-## 2026-08-19 17:53:18 UTC — Add timestamps to agent logs
-
-### Prompt given
-
-> AGENT_LOG.md is not involving timestamp. It only adds date. So update the log to include the timestamp as well and also update the log configuration from log-copilot-interaction.js to include timestamp. And update existing logs
-
-### Output received
-
-Normalized all existing audit headings to include UTC timestamps and updated the Copilot interaction hook to emit a timestamped heading plus an explicit timestamp field.
-
-### What changed
-
-- `AGENT_LOG.md`: added timestamps to all existing entries and documented the historical `00:00:00 UTC` convention.
-- `.github/hooks/log-copilot-interaction.js`: added an explicit `Timestamp` section to generated entries while retaining ISO-derived UTC timestamps in headings.
-- `AGENT_LOG.md`: appended this entry.
-
-### Why
-
-Make historical and future Copilot audit records consistently searchable and chronologically precise where the source time is available.
-
-### Validation
-
-- Confirmed every existing `##` audit heading uses `YYYY-MM-DD HH:mm:ss UTC`.
-- Confirmed the hook generates the same UTC timestamp format in both the heading and timestamp field.
-
-### Notes
-
-Historical exact times were unavailable, so date-only records use midnight UTC as an explicit placeholder.
-
-## 2026-08-19 00:00:00 UTC — Remove non-Copilot agent configurations
+## 2026-08-19 00:00:01 UTC — Remove non-Copilot agent configurations
 
 ### Prompt given
 
@@ -65,7 +36,7 @@ Keep only the repository's GitHub Copilot setup and audit log while removing oth
 
 None.
 
-## 2026-08-19 00:00:00 UTC — Move backend application to apps
+## 2026-08-19 00:10:00 UTC — Move backend application to apps
 
 ### Prompt given
 
@@ -103,7 +74,7 @@ Place the backend application under the monorepo's `apps` directory and keep all
 
 Generated `apps/backend/dist` output was removed after validation. Existing unrelated worktree changes were preserved.
 
-## 2026-08-19 00:00:00 UTC — Rename policyquote applications
+## 2026-08-19 00:20:00 UTC — Rename policyquote applications
 
 ### Prompt given
 
@@ -147,7 +118,7 @@ Use the requested product-facing application names and ensure the web applicatio
 
 Nx reports the Angular Jest executor is deprecated and recommends `nx g @nx/jest:convert-to-inferred` for a future Nx 24 migration. This was not applied because the requested rename and standalone setup are complete.
 
-## 2026-08-19 00:00:00 UTC — Remove legacy web test compiler overrides
+## 2026-08-19 00:30:00 UTC — Remove legacy web test compiler overrides
 
 ### Prompt given
 
@@ -171,7 +142,7 @@ Keep standalone Angular configuration independent from legacy test module settin
 
 Standalone Angular components and TypeScript module format are separate concerns; the former controls Angular component bootstrapping, while the latter controls JavaScript compilation and module loading.
 
-## 2026-08-19 00:00:00 UTC — Set explicit TypeScript root directories
+## 2026-08-19 00:40:00 UTC — Set explicit TypeScript root directories
 
 ### Prompt given
 
@@ -204,7 +175,7 @@ Make TypeScript output layouts explicit for each application and avoid common-so
 
 No project references were added.
 
-## 2026-08-19 00:00:00 UTC — Align app TypeScript configs with TypeScript 6
+## 2026-08-19 00:50:00 UTC — Align app TypeScript configs with TypeScript 6
 
 ### Prompt given
 
@@ -254,7 +225,7 @@ Make the Angular app and test configs compatible with TypeScript 6 common-source
 
 No base config changes were needed because the workspace already uses `moduleResolution: "bundler"`.
 
-## 2026-08-19 00:00:00 UTC — Add project-specific npm scripts
+## 2026-08-19 01:00:00 UTC — Add project-specific npm scripts
 
 ### Prompt given
 
@@ -285,7 +256,7 @@ Provide direct project-specific commands without adding aggregate or internal pa
 
 Serve and browser e2e scripts were not started because they are long-running or browser-dependent. The web build retains the existing Angular component-style budget warning.
 
-## 2026-08-19 00:00:00 UTC — Centralize app package management
+## 2026-08-19 01:10:00 UTC — Centralize app package management
 
 ### Prompt given
 
@@ -320,7 +291,7 @@ Keep one npm package-management source of truth at the monorepo root while prese
 
 Nx targets do not belong in the root npm manifest; they remain project-specific in `apps/policyquote-api/project.json` while npm dependencies and scripts are centralized.
 
-## 2026-08-19 00:00:00 UTC — Fix backend knowledge-base loading
+## 2026-08-19 01:20:00 UTC — Fix backend knowledge-base loading
 
 ### Prompt given
 
@@ -355,7 +326,7 @@ The previous path omitted `src`, and the prior asset declaration did not produce
 
 The HTTP runtime check was blocked by the terminal sandbox's temporary-file restriction; asset packaging and direct loader execution passed independently.
 
-## 2026-08-19 00:00:00 UTC — Add policyquote API Jest testing
+## 2026-08-19 01:30:00 UTC — Add policyquote API Jest testing
 
 ### Prompt given
 
@@ -394,7 +365,7 @@ Provide a project-specific API Jest target and make the tests exercise the under
 
 Nx reports the Jest executor is deprecated and recommends migrating to inferred Jest targets in Nx 24. The current target remains supported and passes.
 
-## 2026-08-19 00:00:00 UTC — Reset Nx daemon state after Angular app generation
+## 2026-08-19 01:40:00 UTC — Reset Nx daemon state after Angular app generation
 
 ### Prompt given
 
@@ -426,7 +397,7 @@ Clear stale Nx daemon/cache state after Angular generation while preserving lint
 
 Nx reported that the Angular lint executor is deprecated and recommends `nx g @nx/eslint:convert-to-inferred` for a future Nx 24 migration. This was not applied because lint is currently working and the request asked for the minimal daemon recovery.
 
-## 2026-08-19 00:00:00 UTC — Simplify Nx TypeScript configuration
+## 2026-08-19 01:50:00 UTC — Simplify Nx TypeScript configuration
 
 ### Prompt given
 
@@ -459,7 +430,7 @@ Make Angular generators compatible with the workspace while keeping a straightfo
 
 Existing unrelated worktree changes were preserved.
 
-## 2026-08-19 00:00:00 UTC — Keep underwriting KB backend-owned
+## 2026-08-19 02:00:00 UTC — Keep underwriting KB backend-owned
 
 ### Prompt given
 
@@ -488,3 +459,91 @@ Keep deterministic underwriting configuration out of frontend-visible files whil
 ### Notes
 
 None.
+
+## 2026-08-19 17:53:18 UTC — Add timestamps to agent logs
+
+### Prompt given
+
+> AGENT_LOG.md is not involving timestamp. It only adds date. So update the log to include the timestamp as well and also update the log configuration from log-copilot-interaction.js to include timestamp. And update existing logs
+
+### Output received
+
+Normalized all existing audit headings to include timestamps and updated the Copilot interaction hook to emit a timestamped heading plus an explicit timestamp field.
+
+### What changed
+
+- `AGENT_LOG.md`: added timestamps to all existing entries and documented the historical timestamp convention.
+- `.github/hooks/log-copilot-interaction.js`: added an explicit `Timestamp` section to generated entries while retaining ISO-derived UTC timestamps in headings.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Make historical and future Copilot audit records consistently searchable and chronologically precise where the source time is available.
+
+### Validation
+
+- Confirmed every existing `##` audit heading uses `YYYY-MM-DD HH:mm:ss UTC`.
+- Confirmed the hook generates the same UTC timestamp format in both the heading and timestamp field.
+
+### Notes
+
+Historical exact times were unavailable, so date-only records use ordered dummy timestamps.
+
+## 2026-08-19 18:05:00 UTC — Replace evaluator switch with operator registry
+
+### Prompt given
+
+> Replace only the operator switch in evaluator.ts with an exhaustive operator registry using `satisfies Record<ConditionOperator, ConditionEvaluator>`. Preserve current behaviour. Do not add new operators or modify the risk engine.
+
+### Output received
+
+Replaced the evaluator's operator condition chain with a registry containing the existing six operators and typed it with `satisfies Record<ConditionOperator, ConditionEvaluator>`.
+
+### What changed
+
+- `apps/policyquote-api/src/engine/evaluator.ts`: added the exhaustive operator registry and routed `matchesCondition` through it.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Make operator coverage compile-time exhaustive while preserving every existing comparison implementation and leaving schemas and the risk engine unchanged.
+
+### Validation
+
+- Focused evaluator test passed.
+- Full API test suite passed: 2 suites, 3 tests.
+- API typecheck passed.
+- API lint passed.
+
+### Notes
+
+No operators were added or removed.
+
+## 2026-08-19 18:07:00 UTC — Enforce chronological agent logs
+
+### Prompt given
+
+> Agent_log should always be chronological, so based on the changes and details added. I want it to be arranged chronological by giving a dummy timestamp, and for future references the log should always be added chronological. No new misalignment should be there. So update the configuration accordingly
+
+### Output received
+
+Reordered the existing audit entries with strictly increasing timestamps, assigned ordered dummy times to historical entries, and updated the Copilot hook to prevent future timestamps from being earlier than the last log entry.
+
+### What changed
+
+- `AGENT_LOG.md`: reordered timestamped entries and assigned unique historical dummy timestamps.
+- `.github/hooks/log-copilot-interaction.js`: added a last-entry timestamp guard that advances generated timestamps when necessary.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Keep the audit log strictly chronological and prevent future hook-generated entries from creating timestamp misalignment.
+
+### Validation
+
+- Hook syntax check passed.
+- Confirmed all 15 existing headings are strictly chronological.
+
+### Notes
+
+Historical times remain approximations; their ordering follows the original change sequence.

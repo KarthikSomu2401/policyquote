@@ -1,40 +1,37 @@
 import type { QuoteInput } from '../schema/quote-request.schema';
-import type { Condition } from '../schema/condition.schema';
+import type {
+  Condition,
+  ConditionOperator,
+} from '../schema/condition.schema';
+
+type ConditionEvaluator = (
+  actualValue: unknown,
+  condition: Condition,
+) => boolean;
+
+const conditionEvaluators = {
+  lt: (actualValue, condition) =>
+    Number(actualValue) < Number(condition.value),
+  eq: (actualValue, condition) => actualValue === condition.value,
+  gt: (actualValue, condition) =>
+    Number(actualValue) > Number(condition.value),
+  gte: (actualValue, condition) =>
+    Number(actualValue) >= Number(condition.value),
+  between: (actualValue, condition) =>
+    condition.min !== undefined &&
+    condition.max !== undefined &&
+    Number(actualValue) >= condition.min &&
+    Number(actualValue) <= condition.max,
+  outside_range: (actualValue, condition) =>
+    condition.min !== undefined &&
+    condition.max !== undefined &&
+    (Number(actualValue) < condition.min || Number(actualValue) > condition.max),
+} satisfies Record<ConditionOperator, ConditionEvaluator>;
 
 export function matchesCondition(
   input: QuoteInput,
   condition: Condition,
 ): boolean {
   const actualValue = input[condition.field];
-
-  if (condition.operator === 'lt') {
-    return Number(actualValue) < Number(condition.value);
-  }
-
-  if (condition.operator === 'gt') {
-    return Number(actualValue) > Number(condition.value);
-  }
-
-  if (condition.operator === 'gte') {
-    return Number(actualValue) >= Number(condition.value);
-  }
-
-  if (condition.operator === 'between') {
-    return (
-      condition.min !== undefined &&
-      condition.max !== undefined &&
-      Number(actualValue) >= condition.min &&
-      Number(actualValue) <= condition.max
-    );
-  }
-
-  if (condition.operator === 'outside_range') {
-    return (
-      condition.min !== undefined &&
-      condition.max !== undefined &&
-      (Number(actualValue) < condition.min || Number(actualValue) > condition.max)
-    );
-  }
-
-  return actualValue === condition.value;
+  return conditionEvaluators[condition.operator](actualValue, condition);
 }

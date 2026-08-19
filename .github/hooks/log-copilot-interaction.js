@@ -25,7 +25,30 @@ process.stdin.on("end", () => {
     };
   }
 
-  const timestamp = new Date()
+  if (!fs.existsSync(logPath)) {
+    fs.writeFileSync(
+      logPath,
+      "# Agent Log\n\nThis file records significant Copilot interactions.\n",
+      "utf8"
+    );
+  }
+
+  const logContents = fs.readFileSync(logPath, "utf8");
+
+  const timestampPattern = /^## (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC) — /gm;
+  let lastTimestamp = null;
+  let match;
+
+  while ((match = timestampPattern.exec(logContents)) !== null) {
+    lastTimestamp = new Date(match[1]);
+  }
+
+  const timestampDate = new Date();
+  if (lastTimestamp && timestampDate <= lastTimestamp) {
+    timestampDate.setTime(lastTimestamp.getTime() + 1000);
+  }
+
+  const timestamp = timestampDate
     .toISOString()
     .replace("T", " ")
     .replace(/\.\d{3}Z$/, " UTC");
@@ -35,14 +58,6 @@ process.stdin.on("end", () => {
       /(["']?(?:token|password|secret|api[_-]?key|private[_-]?key)["']?\s*:\s*)(["'][^"']*["']|[^,\n}]+)/gi,
       "$1[REDACTED]"
     );
-
-  if (!fs.existsSync(logPath)) {
-    fs.writeFileSync(
-      logPath,
-      "# Agent Log\n\nThis file records significant Copilot interactions.\n",
-      "utf8"
-    );
-  }
 
   const entry = `
 
