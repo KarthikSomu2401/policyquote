@@ -35,3 +35,41 @@ Keep only the repository's GitHub Copilot setup and audit log while removing oth
 ### Notes
 
 None.
+
+## 2026-08-19 — Move backend application to apps
+
+### Prompt given
+
+> I want to move the backend application to apps folder. And I want backend app references in the whole mono repo to be updated accordingly
+
+### Output received
+
+Moved the backend application from `backend/` to `apps/backend/` and updated workspace, Nx, TypeScript, ESLint, and npm lockfile references to the new location. Preserved the backend project name and dependencies.
+
+### What changed
+
+- `apps/backend/package.json`: updated Nx target paths and output locations.
+- `apps/backend/tsconfig.app.json`: updated the root TypeScript config path.
+- `apps/backend/tsconfig.json`: updated the root TypeScript config path.
+- `apps/backend/eslint.config.mjs`: updated the root ESLint config import.
+- `package.json`: changed the npm workspace entry from `backend` to `apps/*`.
+- `package-lock.json`: updated workspace and package resolution entries to `apps/*` and `apps/backend`.
+- `tsconfig.json`: synchronized the backend project reference to `apps/backend`.
+- `apps/backend/`: moved the backend application files from the former `backend/` directory.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Place the backend application under the monorepo's `apps` directory and keep all project references consistent with its new path.
+
+### Validation
+
+- `npx nx show project @org/backend` succeeded.
+- `npx nx typecheck @org/backend` succeeded.
+- `npx nx build @org/backend --configuration=development` succeeded.
+- `npx nx lint @org/backend` succeeded.
+- Repository-wide stale-reference scan completed after excluding `.git`, `node_modules`, `.nx`, and `AGENT_LOG.md`.
+
+### Notes
+
+Generated `apps/backend/dist` output was removed after validation. Existing unrelated worktree changes were preserved.
