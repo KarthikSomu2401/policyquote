@@ -547,3 +547,64 @@ Keep the audit log strictly chronological and prevent future hook-generated entr
 ### Notes
 
 Historical times remain approximations; their ordering follows the original change sequence.
+
+## 2026-08-19 18:10:41 UTC — Add generic starts_with condition
+
+### Prompt given
+
+> Add only the generic starts_with operator to the condition TypeScript types and discriminated condition schema. And add only the generic starts_with evaluator to the operator registry. It must compare the configured condition value with the string form of the actual input value. Do not reference postcode directly.
+
+### Output received
+
+Added only the generic `starts_with` condition variant and registry evaluator. The evaluator converts the actual input to a string and checks whether it starts with the configured string value.
+
+### What changed
+
+- `apps/policyquote-api/src/schema/condition.schema.ts`: added the `starts_with` operator and discriminated string-valued condition.
+- `apps/policyquote-api/src/engine/evaluator.ts`: added the generic `starts_with` registry handler.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Support prefix matching generically without coupling the condition system to postcode or any other specific field.
+
+### Validation
+
+- API production and test TypeScript checks passed.
+- API test suite passed: 2 suites, 3 tests.
+- API lint passed.
+- Confirmed no postcode reference was added.
+
+### Notes
+
+No KB, risk-engine, or additional operator changes were made.
+
+## 2026-08-19 18:15:44 UTC — Add API testing and caveman skills
+
+### Prompt given
+
+> Consider yourself as node app architect, now create an agent skill that need to be invoked everytime when I invoke a change in my api app which should write test cases for any changes that are being made as a part of the request. Also I want you to fix and write tests for existing codes. Meanwhile I also want another skill called caveman ai agent, which will only reply to me in caveman language whenever a new request is being made. But the Agent_log should be maintaining the normal english
+
+### Output received
+
+Created two workspace Copilot skills. The API testing skill applies to changes under `apps/policyquote-api`, requires focused tests, and requires API test/typecheck/lint validation. The caveman skill is opt-in and changes user-facing response style while explicitly keeping `AGENT_LOG.md` in normal English.
+
+### What changed
+
+- `.github/skills/policyquote-api-testing/SKILL.md`: added API test-enforcement workflow.
+- `.github/skills/caveman-ai-agent/SKILL.md`: added opt-in caveman response-style workflow with a normal-English audit-log exception.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Ensure backend API changes carry focused tests and provide a separate, controlled response style without corrupting repository audit records.
+
+### Validation
+
+- Confirmed both skill files exist with valid YAML frontmatter and descriptive discovery metadata.
+- Confirmed the API skill includes test, typecheck, lint, and audit-log requirements.
+- Confirmed the caveman skill explicitly preserves normal-English `AGENT_LOG.md` entries.
+
+### Notes
+
+Skills are on-demand workflows; caveman mode activates when the skill is invoked or explicitly requested.

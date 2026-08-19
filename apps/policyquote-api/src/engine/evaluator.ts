@@ -13,16 +13,22 @@ const conditionEvaluators = {
   lt: (actualValue, condition) =>
     Number(actualValue) < Number(condition.value),
   eq: (actualValue, condition) => actualValue === condition.value,
+  starts_with: (actualValue, condition) =>
+    String(actualValue).startsWith(String(condition.value)),
   gt: (actualValue, condition) =>
     Number(actualValue) > Number(condition.value),
   gte: (actualValue, condition) =>
     Number(actualValue) >= Number(condition.value),
   between: (actualValue, condition) =>
+    'min' in condition &&
+    'max' in condition &&
     condition.min !== undefined &&
     condition.max !== undefined &&
     Number(actualValue) >= condition.min &&
     Number(actualValue) <= condition.max,
   outside_range: (actualValue, condition) =>
+    'min' in condition &&
+    'max' in condition &&
     condition.min !== undefined &&
     condition.max !== undefined &&
     (Number(actualValue) < condition.min || Number(actualValue) > condition.max),
