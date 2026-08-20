@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { QuoteFormComponent } from './quote-form.component';
-import { QuoteRequest } from './quote.types';
+import { QuoteRequest } from '../../models/quote.types';
 
 describe('QuoteFormComponent', () => {
   let component: QuoteFormComponent;
@@ -18,12 +18,22 @@ describe('QuoteFormComponent', () => {
 
   it('requires every quote field', () => {
     expect(component.quoteForm.invalid).toBe(true);
-    expect(component.quoteForm.controls.customerName.hasError('required')).toBe(true);
+    expect(component.quoteForm.controls.customerName.hasError('required')).toBe(
+      true,
+    );
     expect(component.quoteForm.controls.age.hasError('required')).toBe(true);
-    expect(component.quoteForm.controls.propertyType.hasError('required')).toBe(true);
-    expect(component.quoteForm.controls.propertyValue.hasError('required')).toBe(true);
-    expect(component.quoteForm.controls.postcode.hasError('required')).toBe(true);
-    expect(component.quoteForm.controls.previousClaims.hasError('required')).toBe(true);
+    expect(component.quoteForm.controls.propertyType.hasError('required')).toBe(
+      true,
+    );
+    expect(
+      component.quoteForm.controls.propertyValue.hasError('required'),
+    ).toBe(true);
+    expect(component.quoteForm.controls.postcode.hasError('required')).toBe(
+      true,
+    );
+    expect(
+      component.quoteForm.controls.previousClaims.hasError('required'),
+    ).toBe(true);
   });
 
   it('emits a typed request when the form is valid', () => {

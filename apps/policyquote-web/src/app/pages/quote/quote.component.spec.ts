@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { QuoteApiService } from './quote-api.service';
+import { QuoteApiService } from '../../services/quote-api.service';
 import { QuoteComponent } from './quote.component';
-import { QuoteRequest, QuoteResult } from './quote.types';
+import { QuoteRequest, QuoteResult } from '../../models/quote.types';
 
 const quoteRequest: QuoteRequest = {
   customerName: 'Alex Smith',

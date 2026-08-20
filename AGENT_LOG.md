@@ -1851,3 +1851,41 @@ Separate environment-specific runtime settings from source code while preserving
 ### Notes
 
 No real `.env` files or secrets were created. Risk scoring values, bands, factors, and premium settings remain in `risk-kb.json`. Nx added `tsconfig.json` references metadata during synchronization.
+
+## 2026-08-20 10:15:00 UTC — Reorganize policyquote-web into feature folders with external templates/styles
+
+### Prompt given
+
+> Refactor the frontend folder structure cleanly. Group components, pages, services, models/types, pipes, configuration, tests and styles into appropriate folders; update all relative imports and route paths. Move every component to external templateUrl and styleUrl files, preserving existing HTML and SCSS behaviour. Organise shared SCSS with clean @use imports and remove obsolete or duplicate files. Do not change functionality, API contracts, Signals or validation. Run formatting, tests and the frontend build after the refactor.
+
+### Output received
+
+Reorganized `apps/policyquote-web/src/app/` from a flat file layout into `config/` (app config, routes, runtime config), `models/` (quote types), `services/` (quote API service), `pipes/` (currency format pipe), `components/` (app shell, header, quote form, quote result, risk band badge), and `pages/` (landing, quote) using `git mv` to preserve history. Extracted every inline `template`/`styles` string (including the previously inline `risk-band-badge` template and styles) into external `.html`/`.scss` files with identical markup and CSS, and updated every relative import, route import, and SCSS `@use '../styles/tokens'` path to match the new folder depth. No component logic, Signals, validation, or API contracts were changed. Ran `nx format:write`, which only reformatted whitespace/EOF newlines in `styles.scss` and three `tsconfig*.json` files.
+
+### What changed
+
+- `apps/policyquote-web/src/app/config/`: `app.config.ts`, `app.routes.ts`, `runtime-config.ts`, `runtime-config.spec.ts` (moved).
+- `apps/policyquote-web/src/app/models/quote.types.ts` (moved).
+- `apps/policyquote-web/src/app/services/quote-api.service.ts` (moved; import paths updated).
+- `apps/policyquote-web/src/app/pipes/currency-format.pipe.ts`, `.spec.ts` (moved).
+- `apps/policyquote-web/src/app/components/app-shell/` (`app.ts`, `app.html`, `app.scss`, `app.spec.ts`), `components/app-header/` (added external `app-header.component.html`), `components/quote-form/` (added external `.html`), `components/quote-result/` (added external `.html`), `components/risk-band-badge/` (added external `.html` and `.scss` extracted from inline `template`/`styles`).
+- `apps/policyquote-web/src/app/pages/landing/` and `pages/quote/` (added external `.html` templates; moved `.scss`/`.spec.ts`).
+- `apps/policyquote-web/src/main.ts`, `src/app/config/app.routes.ts`: updated import paths to new component/page locations.
+- `apps/policyquote-web/src/styles.scss`, `tsconfig.app.json`, `tsconfig.json`, `tsconfig.spec.json`: whitespace/EOF-newline formatting from `nx format:write`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+User requested a clean, grouped frontend folder structure (components/pages/services/models/pipes/config/tests/styles) with every component using external template/style files instead of inline strings, without altering functionality.
+
+### Validation
+
+- `npx nx run policyquote-web:typecheck` passed.
+- `npx nx run policyquote-web:lint` passed.
+- `npx nx run policyquote-web:build --configuration=development --skipNxCache` passed (Nx flagged the run as flaky on one earlier attempt with no error output; a clean rerun succeeded).
+- `npx nx run policyquote-web:test` failed with the same pre-existing `this._moduleMocker.clearMocksOnScope is not a function` Jest runtime mismatch seen before this change (not a regression); all 7 spec files were still discovered at their new locations.
+- `npx nx format:write --projects=policyquote-web` applied formatting; re-ran typecheck and lint afterward, both passed.
+
+### Notes
+
+None.
