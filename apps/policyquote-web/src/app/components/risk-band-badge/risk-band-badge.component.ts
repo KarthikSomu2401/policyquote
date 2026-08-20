@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RiskBandName } from '../../models/quote.types';
 
 @Component({
@@ -6,6 +6,7 @@ import { RiskBandName } from '../../models/quote.types';
   selector: 'app-risk-band-badge',
   templateUrl: './risk-band-badge.component.html',
   styleUrl: './risk-band-badge.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RiskBandBadgeComponent {
   readonly riskScore = input.required<number>();

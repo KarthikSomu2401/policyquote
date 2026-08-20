@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { QuoteApiService } from '../../services/quote-api.service';
 import { QuoteFormComponent } from '../../components/quote-form/quote-form.component';
 import { QuoteResultComponent } from '../../components/quote-result/quote-result.component';
@@ -10,6 +10,7 @@ import { QuoteRequest, QuoteResult } from '../../models/quote.types';
   imports: [QuoteFormComponent, QuoteResultComponent],
   templateUrl: './quote.component.html',
   styleUrl: './quote.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QuoteComponent {
   private readonly quoteApiService = inject(QuoteApiService);

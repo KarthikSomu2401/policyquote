@@ -1,8 +1,15 @@
 import { Route } from '@angular/router';
-import { LandingComponent } from '../pages/landing/landing.component';
-import { QuoteComponent } from '../pages/quote/quote.component';
 
 export const appRoutes: Route[] = [
-  { path: '', component: LandingComponent },
-  { path: 'quote', component: QuoteComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  {
+    path: 'quote',
+    loadComponent: () =>
+      import('../pages/quote/quote.component').then((m) => m.QuoteComponent),
+  },
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('../pages/landing/landing.component').then((m) => m.LandingComponent),
+  },
 ];

@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -22,6 +22,7 @@ type QuoteForm = {
   imports: [ReactiveFormsModule],
   templateUrl: './quote-form.component.html',
   styleUrl: './quote-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QuoteFormComponent {
   readonly submitted = output<QuoteRequest>();

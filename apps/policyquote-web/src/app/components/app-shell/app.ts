@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AppHeaderComponent } from '../app-header/app-header.component';
 
@@ -8,6 +8,7 @@ import { AppHeaderComponent } from '../app-header/app-header.component';
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App {
   protected title = 'policyquote-web';
