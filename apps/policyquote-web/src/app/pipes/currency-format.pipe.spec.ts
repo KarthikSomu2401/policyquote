@@ -1,4 +1,5 @@
 import { CurrencyFormatPipe } from './currency-format.pipe';
+import { describe, expect, it, afterEach } from '@jest/globals';
 
 describe('CurrencyFormatPipe', () => {
   const originalLanguage = navigator.language;

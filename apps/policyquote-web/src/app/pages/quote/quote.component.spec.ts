@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, jest, beforeEach } from '@jest/globals';
 import { of, throwError } from 'rxjs';
 import { QuoteApiService } from '../../services/quote-api.service';
 import { QuoteComponent } from './quote.component';

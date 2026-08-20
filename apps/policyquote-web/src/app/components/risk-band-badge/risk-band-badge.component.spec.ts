@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RiskBandBadgeComponent } from './risk-band-badge.component';
+import { describe, expect, it, beforeEach } from '@jest/globals';
 
 describe('RiskBandBadgeComponent', () => {
   let component: RiskBandBadgeComponent;

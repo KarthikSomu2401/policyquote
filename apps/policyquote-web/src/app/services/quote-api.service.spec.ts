@@ -6,6 +6,8 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { QuoteApiService } from './quote-api.service';
 import { QuoteRequest, QuoteResult } from '../models/quote.types';
+import { describe, expect, it, afterEach, beforeEach } from '@jest/globals';
+
 
 const quoteRequest: QuoteRequest = {
   customerName: 'Alex Smith',

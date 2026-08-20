@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
 import { appRoutes } from '../../config/app.routes';
+import { describe, expect, it, beforeEach } from '@jest/globals';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -21,8 +22,9 @@ describe('App', () => {
   it('should configure the landing page as the default and preserve quote routing', () => {
     expect(appRoutes).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ path: '', component: expect.any(Function) }),
-        expect.objectContaining({ path: 'quote' }),
+        expect.objectContaining({ path: '', pathMatch: 'full', redirectTo: 'home' }),
+        expect.objectContaining({ path: 'quote', loadComponent: expect.any(Function) }),
+        expect.objectContaining({ path: 'home', loadComponent: expect.any(Function) })
       ]),
     );
   });

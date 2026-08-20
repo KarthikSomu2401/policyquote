@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { QuoteResultComponent } from './quote-result.component';
 import { QuoteResult } from '../../models/quote.types';
+import { describe, expect, it, beforeEach } from '@jest/globals';
 
 const baseResult: QuoteResult = {
   customerName: 'Alex Smith',
