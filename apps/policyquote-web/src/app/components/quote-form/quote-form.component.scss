@@ -8,7 +8,7 @@
 
 form {
   @include surface-panel(0.5rem);
-  box-shadow: 0 0.5rem 1.5rem rgba(30, 58, 138, 0.06);
+  box-shadow: 0 0.5rem 1.5rem rgba($blue-900, 0.06);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -17,7 +17,7 @@ form {
 }
 
 fieldset {
-  background: #f8fafc;
+  background: $slate-50;
   border: 1px solid $slate-200;
   border-radius: 0.35rem;
   display: grid;
@@ -70,7 +70,7 @@ label {
 
 input,
 select {
-  border: 1px solid #9ca3af;
+  border: 1px solid $slate-400;
   border-radius: 0.25rem;
   box-sizing: border-box;
   font: inherit;
@@ -86,7 +86,7 @@ select {
 input:focus,
 select:focus {
   border-color: $blue-700;
-  outline: 2px solid #bfdbfe;
+  outline: 2px solid $blue-200;
   outline-offset: 1px;
 }
 
@@ -114,8 +114,7 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 3px solid #60a5fa;
-  outline-offset: 2px;
+  @include focus-ring(2px);
 }
 
 @media (min-width: 561px) {

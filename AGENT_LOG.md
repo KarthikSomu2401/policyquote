@@ -1928,3 +1928,42 @@ User asked for full test coverage across policyquote-web components/services/pip
 ### Notes
 
 The two failing `policyquote-api` tests predate this session (stale expectations for a risk factor already removed from `risk-kb.json`) and were not modified or fixed here, since the request was scoped to `policyquote-web`. `npm install` was run with `--cache "$TMPDIR/npm-cache"` because the machine's default npm cache directory is root-owned and rejects writes; no `sudo` commands were run.
+
+## 2026-08-20 10:45:00 UTC — Move more duplicated colors into shared SCSS tokens/mixins
+
+### Prompt given
+
+> Few more colors can be moved to common scss files. Make the changes without removing any logic. Make sure all the imports also updated accordingly. If few more re-usability can be introduced without affecting the functionality make those necessary changes
+
+### Output received
+
+Scanned every `policyquote-web` component SCSS file for remaining hardcoded hex/`rgba()` colors and moved them into `src/styles/_tokens.scss`: added `$blue-400`, `$blue-200`, `$slate-50`, `$slate-400`, `$danger-100`, `$warning-100`, `$warning-800`, and `$overlay-900` (matching the exact hex values already in use, so no visual change). Replaced every matching hardcoded value across `app-header`, `quote-form`, `quote-result`, `risk-band-badge`, `landing`, and the `quote` page with the new tokens, including `rgba()` calls now built from `$blue-900`/`$overlay-900` instead of raw RGB triplets. Added a new shared `focus-ring($offset)` mixin in `src/styles/_mixins.scss` for the duplicated `3px solid` keyboard focus outline (used with different `outline-offset` values in `app-header` and `quote-form`) and applied it via `@use`. No component logic, templates, or class names were touched.
+
+### What changed
+
+- `apps/policyquote-web/src/styles/_tokens.scss`: added `$blue-400`, `$blue-200`, `$slate-50`, `$slate-400`, `$danger-100`, `$warning-100`, `$warning-800`, `$overlay-900`.
+- `apps/policyquote-web/src/styles/_mixins.scss`: added a shared `focus-ring($offset: 2px)` mixin.
+- `apps/policyquote-web/src/app/components/app-header/app-header.component.scss`: added `@use '../../../styles/mixins' as *;`; replaced the hardcoded focus outline with `@include focus-ring(3px);`.
+- `apps/policyquote-web/src/app/components/quote-form/quote-form.component.scss`: replaced hardcoded `#f8fafc`, `#9ca3af`, `#bfdbfe`, `#60a5fa`, and the raw `rgba(30, 58, 138, 0.06)` shadow with `$slate-50`, `$slate-400`, `$blue-200`, and `rgba($blue-900, 0.06)`/`@include focus-ring(2px);`.
+- `apps/policyquote-web/src/app/components/quote-result/quote-result.component.scss`: replaced `#f8fafc` and `#bfdbfe` with `$slate-50` and `$blue-200`.
+- `apps/policyquote-web/src/app/components/risk-band-badge/risk-band-badge.component.scss`: replaced `#fee2e2`, `#fef3c7`, `#92400e` with `$danger-100`, `$warning-100`, `$warning-800`.
+- `apps/policyquote-web/src/app/pages/landing/landing.component.scss`: replaced `#f8fafc`, `rgba(15, 23, 42, 0.64)`, and `#bfdbfe` with `$slate-50`, `rgba($overlay-900, 0.64)`, and `$blue-200`.
+- `apps/policyquote-web/src/app/pages/quote/quote.component.scss`: replaced `rgba(15, 23, 42, 0.2)` with `rgba($overlay-900, 0.2)`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+User asked for additional duplicated colors to be consolidated into shared SCSS files and for further reuse opportunities, without changing any functionality, plus updated imports where new shared partials were introduced.
+
+### Validation
+
+- Confirmed via `grep` that no hardcoded hex/`rgba()` triplets remain in `apps/policyquote-web/src/app/**/*.scss` outside of the new token-based `rgba($token, alpha)` calls.
+- `npx nx run policyquote-web:typecheck` passed.
+- `npx nx run policyquote-web:lint` passed.
+- `npx nx run policyquote-web:build --configuration=development --skipNxCache` passed on the first attempt (no flaky retry needed), confirming the new tokens/mixins compile correctly.
+- `npx nx run policyquote-web:test` passed: 10 test suites, 25 tests, 0 failures.
+- `npx nx format:write --projects=policyquote-web` ran with no files needing reformatting.
+
+### Notes
+
+Every hex value moved into a token was substituted with its exact existing literal (verified before editing), so the computed CSS output is unchanged; this was a pure declaration-source consolidation.
