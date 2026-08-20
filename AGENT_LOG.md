@@ -1798,3 +1798,56 @@ Keep production KB configuration outside the Lambda package while preserving det
 ### Notes
 
 Docker image execution was not rerun; the prior repository lockfile mismatch still blocks the Dockerfile's `npm ci` step. Risk scoring logic was preserved.
+
+## 2026-08-20 09:00:20 UTC — Move runtime settings to env files
+
+### Prompt given
+
+> Refactor configuration so environment-specific URLs and non-business runtime settings are moved from source code into .env files. Add .env.example files with safe placeholder values for the frontend and backend, update .gitignore so real .env files are not committed, and keep risk scoring values, bands, factors and premium configuration in risk-kb.json rather than environment variables. Use the existing Nx-compatible environment loading approach. Update README.md with setup instructions, required variables, defaults, local development examples and a note never to commit secrets. Do not change API contracts, risk logic or UI behaviour. Add focused tests or startup validation for required environment variables.
+
+### Output received
+
+Moved the API port and frontend API URL to Nx-loaded environment configuration. Added safe frontend and backend `.env.example` files, ignored real `.env` files, generated the frontend runtime config before Nx build/serve, and added API startup validation plus frontend runtime configuration validation. Kept risk configuration in `risk-kb.json`, updated the OpenAPI server URL to be environment-neutral, and documented setup, variables, defaults, and secret-handling guidance.
+
+### What changed
+
+- `.gitignore`: ignored real `.env` files and generated frontend runtime configuration while preserving `.env.example` files.
+- `apps/policyquote-api/.env.example`: documented API and local/AppConfig runtime variables.
+- `apps/policyquote-api/src/runtime-config.ts`: validated the configurable API port.
+- `apps/policyquote-api/src/runtime-config.spec.ts`: added default and invalid-port startup validation tests.
+- `apps/policyquote-api/src/main.ts`: used the validated configured API port.
+- `apps/policyquote-web/.env.example`: documented frontend API and web URL variables.
+- `apps/policyquote-web/src/app/runtime-config.ts`: loaded and validated the generated API URL.
+- `apps/policyquote-web/src/app/runtime-config.spec.ts`: added runtime URL validation tests.
+- `apps/policyquote-web/src/app/quote-api.service.ts`: removed the hardcoded API URL.
+- `apps/policyquote-web/src/index.html`: loaded the generated runtime config asset.
+- `apps/policyquote-web/project.json`: added the Nx runtime config generation target to build and serve.
+- `apps/policyquote-web-e2e/playwright.config.mts`: accepted `POLICYQUOTE_WEB_URL` as an environment override.
+- `tools/generate-web-runtime-config.mjs`: generated the ignored frontend runtime configuration from Nx task environment variables.
+- `apps/policyquote-api/src/assets/openapi.json`: changed the server URL to a relative URL.
+- `README.md`: documented env setup, variables, defaults, Nx loading, and secret rules.
+- `SOLUTION.md`: documented runtime configuration ownership.
+- `tsconfig.json`: Nx synchronized the empty TypeScript references array during typecheck.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Separate environment-specific runtime settings from source code while preserving API contracts, UI behavior, and the risk knowledge base as the sole source of scoring and premium configuration.
+
+### Validation
+
+- API runtime configuration tests passed: 2 tests.
+- `npx nx typecheck policyquote-api` passed.
+- `npx nx typecheck policyquote-web` passed.
+- `npx nx typecheck policyquote-web-e2e` passed.
+- `npx nx build policyquote-web --configuration=development --skipNxCache` passed and generated `public/runtime-config.js`.
+- `npx nx lint policyquote-api` passed.
+- `npx nx lint policyquote-web` passed.
+- `npx nx lint policyquote-web-e2e` passed.
+- Nx environment override check passed for `POLICYQUOTE_API_URL`.
+- `git diff --check` passed.
+- Frontend runtime Jest test was attempted but blocked before execution by the existing `this._moduleMocker.clearMocksOnScope is not a function` Jest runtime mismatch.
+
+### Notes
+
+No real `.env` files or secrets were created. Risk scoring values, bands, factors, and premium settings remain in `risk-kb.json`. Nx added `tsconfig.json` references metadata during synchronization.

@@ -1,6 +1,6 @@
 import { app } from './app';
-const port = 3000;
+import { runtimeConfig } from './runtime-config';
 
-app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}`);
+app.listen(runtimeConfig.port, () => {
+  console.log(`API listening on port ${runtimeConfig.port}`);
 });

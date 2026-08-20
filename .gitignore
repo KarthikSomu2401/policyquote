@@ -8,6 +8,14 @@ out-tsc
 # dependencies
 node_modules
 
+# environment files
+**/.env
+**/.env.*
+!**/.env.example
+
+# generated frontend runtime configuration
+/apps/policyquote-web/public/runtime-config.js
+
 # IDEs and editors
 /.idea
 .project

@@ -26,6 +26,15 @@ Nx project names are `policyquote-web`, `policyquote-api`, and `policyquote-web-
 - AWS SAM CLI for local Lambda invocation and the SAM API emulator.
 - Playwright browser binaries for E2E tests. Install them with `npx playwright install` when needed.
 
+Nx loads `.env` files from the workspace and project directories for task processes. Copy the safe examples before local development:
+
+```sh
+cp apps/policyquote-api/.env.example apps/policyquote-api/.env
+cp apps/policyquote-web/.env.example apps/policyquote-web/.env
+```
+
+Never commit `.env` files or secrets. Only `.env.example` files belong in version control.
+
 Install workspace dependencies:
 
 ```sh
@@ -42,7 +51,7 @@ npx nx serve policyquote-api
 npx nx serve policyquote-web
 ```
 
-The Angular frontend runs at <http://localhost:4200> and calls the API at <http://localhost:3000>. Local Nx development uses the file fallback. The API serves:
+The Angular frontend runs at the URL configured by `POLICYQUOTE_WEB_URL` (default `http://localhost:4200`) and calls the API at `POLICYQUOTE_API_URL` (default `http://localhost:3000`). Local Nx development uses the file fallback. The API serves:
 
 - Health check: <http://localhost:3000/health>
 - Swagger UI: <http://localhost:3000/api-docs>
@@ -60,6 +69,22 @@ npx nx test policyquote-api
 ```
 
 The API validates quote requests and returns `400` for invalid input. Its local Express server listens on port `3000`.
+
+### Environment variables
+
+Backend variables are defined in [apps/policyquote-api/.env.example](apps/policyquote-api/.env.example):
+
+- `POLICYQUOTE_API_PORT`: API listen port; defaults to `3000` and must be between `1` and `65535`.
+- `POLICYQUOTE_KB_SOURCE`: `local` for Nx, Docker, and SAM; use `appconfig` in production.
+- `POLICYQUOTE_KB_REFRESH_INTERVAL_MS`: KB refresh interval; defaults to `30000` ms.
+- `APPCONFIG_AGENT_URL`, `APPCONFIG_APPLICATION`, `APPCONFIG_ENVIRONMENT`, and `APPCONFIG_CONFIGURATION`: required when AppConfig is selected.
+
+Frontend variables are defined in [apps/policyquote-web/.env.example](apps/policyquote-web/.env.example):
+
+- `POLICYQUOTE_API_URL`: API base URL; defaults to `http://localhost:3000`.
+- `POLICYQUOTE_WEB_URL`: local frontend URL used by E2E tooling; defaults to `http://localhost:4200`.
+
+The API validates its port at startup. The frontend runtime configuration generator validates that `POLICYQUOTE_API_URL` is an absolute URL before Angular build or serve. Risk bands, factors, scoring values, and premium configuration remain in `risk-kb.json`, not environment variables.
 
 ## AWS SAM local
 

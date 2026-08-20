@@ -19,4 +19,6 @@ Primary local paths:
 - Frontend: `http://localhost:4200`
 - SAM template: `template.yaml`
 
+Runtime URLs and ports are configured through ignored `.env` files. Frontend configuration uses `POLICYQUOTE_API_URL` and `POLICYQUOTE_WEB_URL`; API startup uses `POLICYQUOTE_API_PORT`. Nx loads these files for project tasks, and `.env.example` files document safe local defaults. Risk values remain exclusively in the validated risk knowledge base.
+
 The repository currently uses `npm install` for local dependency setup because the checked-in lockfile is not synchronized with `package.json`; Docker's `npm ci` step therefore needs a lockfile update before the image can build.
