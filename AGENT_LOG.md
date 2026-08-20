@@ -1889,3 +1889,42 @@ User requested a clean, grouped frontend folder structure (components/pages/serv
 ### Notes
 
 None.
+
+## 2026-08-20 10:30:00 UTC — Add missing test coverage, extract shared SCSS mixins, fix Jest jest-mock version mismatch
+
+### Prompt given
+
+> Every component, services, pipes, functions in policyquote-web should be tested, and if there are any scss that can be compiled into common scss files and can be re-used should be re-used. Meanwhile if there are any imports that need to be updated in regards to the necessary changes those also need to be updated.
+
+### Output received
+
+Added the three missing spec files (`AppHeaderComponent`, `QuoteResultComponent`, `QuoteApiService`) so every component, service, and pipe in `policyquote-web` now has a test. Extracted duplicated SCSS declarations (surface card look and primary button look) into a new shared `src/styles/_mixins.scss` (`surface-panel($radius)`, `button-primary`), applied via `@use` in `landing`, `quote-form`, and `quote-result` component styles, and updated `risk-band-badge.component.scss` to reuse existing `$blue-100`/`$blue-900`/`$danger-800` tokens instead of duplicating their hex values, all while preserving the exact computed CSS. While investigating why Jest could not execute any `policyquote-web` spec (a previously-documented pre-existing issue), traced the root cause to a duplicated `jest-mock` version in the dependency tree (`jest-environment-jsdom` pinned to `~30.3.0` while `jest` was `^30.4.2`) and fixed it by bumping `jest-environment-jsdom`/`jest-util` to `~30.4.1` in the root `package.json` and reinstalling — all 10 `policyquote-web` spec suites (25 tests) now pass.
+
+### What changed
+
+- `apps/policyquote-web/src/app/components/app-header/app-header.component.spec.ts`: new test verifying the brand link text/href.
+- `apps/policyquote-web/src/app/components/quote-result/quote-result.component.spec.ts`: new tests for premium/risk summary rendering, the empty-risk-factors fallback message, and the applied-factors list.
+- `apps/policyquote-web/src/app/services/quote-api.service.spec.ts`: new test using `HttpTestingController` to verify the POST request URL/body and response mapping.
+- `apps/policyquote-web/src/styles/_mixins.scss`: new shared `surface-panel($radius)` and `button-primary` SCSS mixins.
+- `apps/policyquote-web/src/app/pages/landing/landing.component.scss`, `components/quote-form/quote-form.component.scss`, `components/quote-result/quote-result.component.scss`: now `@use` the shared mixins for the reassurance-card/form/panel surfaces and primary buttons instead of repeating the same declarations.
+- `apps/policyquote-web/src/app/components/risk-band-badge/risk-band-badge.component.scss`: added `@use '../../../styles/tokens' as *;` and replaced hardcoded hex values with `$blue-100`, `$blue-900`, `$danger-800` where they matched existing tokens exactly.
+- `package.json`, `package-lock.json`: bumped `jest-environment-jsdom` and `jest-util` from `~30.3.0` to `~30.4.1` to align the resolved `jest-mock` version across the dependency tree and fix `TypeError: this._moduleMocker.clearMocksOnScope is not a function`.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+User asked for full test coverage across policyquote-web components/services/pipes/functions and for duplicated SCSS to be consolidated into reusable shared files, with any necessary import updates.
+
+### Validation
+
+- `npx nx run policyquote-web:typecheck` passed.
+- `npx tsc -p apps/policyquote-web/tsconfig.spec.json --noEmit` passed (spec files typecheck; the main typecheck target excludes `*.spec.ts`).
+- `npx nx run policyquote-web:lint` passed.
+- `npx nx run policyquote-web:build --configuration=development --skipNxCache` passed (one run was flagged flaky by Nx with no error output; a clean rerun succeeded, confirming the SCSS mixins compile correctly).
+- `npx nx run policyquote-web:test` passed: 10 test suites, 25 tests, 0 failures (previously blocked entirely by the jest-mock mismatch).
+- `npx nx run policyquote-api:test` run to confirm no regression from the root `package.json` change: 3 of 5 suites passed; 2 pre-existing failures in `api.contract.spec.ts` and `quote.service.spec.ts` reference a `postcode_flood_zone` risk factor removed in an earlier commit — confirmed unrelated by `git status` showing no `policyquote-api` files touched this session.
+- `npx nx format:write --projects=policyquote-web` ran with no files needing reformatting.
+
+### Notes
+
+The two failing `policyquote-api` tests predate this session (stale expectations for a risk factor already removed from `risk-kb.json`) and were not modified or fixed here, since the request was scoped to `policyquote-web`. `npm install` was run with `--cache "$TMPDIR/npm-cache"` because the machine's default npm cache directory is root-owned and rejects writes; no `sudo` commands were run.

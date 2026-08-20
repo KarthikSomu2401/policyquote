@@ -1,4 +1,5 @@
 @use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
 
 :host {
   background: #f8fafc;
@@ -19,9 +20,7 @@ h2 {
 .summary,
 .calculation,
 .risk-factors {
-  background: $surface;
-  border: 1px solid $slate-200;
-  border-radius: 0.4rem;
+  @include surface-panel(0.4rem);
   padding: 1rem;
 }
 

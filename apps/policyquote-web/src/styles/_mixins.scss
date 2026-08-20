@@ -1,0 +1,24 @@
+@use 'tokens' as *;
+
+// Shared surface card look used by content panels across pages/components.
+@mixin surface-panel($radius: 0.5rem) {
+  background: $surface;
+  border: 1px solid $slate-200;
+  border-radius: $radius;
+}
+
+// Shared primary call-to-action button look; callers add layout-specific properties.
+@mixin button-primary {
+  background: $blue-700;
+  border-radius: 0.25rem;
+  color: $surface;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  min-height: 2.75rem;
+
+  &:hover,
+  &:focus-visible {
+    background: $blue-900;
+  }
+}

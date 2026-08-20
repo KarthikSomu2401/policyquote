@@ -1,4 +1,5 @@
 @use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
 
 :host {
   display: block;
@@ -6,9 +7,7 @@
 }
 
 form {
-  background: $surface;
-  border: 1px solid $slate-200;
-  border-radius: 0.5rem;
+  @include surface-panel(0.5rem);
   box-shadow: 0 0.5rem 1.5rem rgba(30, 58, 138, 0.06);
   display: flex;
   flex-direction: column;
@@ -104,22 +103,11 @@ select.ng-touched.ng-invalid {
 }
 
 button {
+  @include button-primary;
   align-self: flex-start;
-  background: $blue-700;
   border: 0;
-  border-radius: 0.25rem;
-  color: $surface;
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
-  min-height: 2.75rem;
   padding: 0.75rem 1.25rem;
   width: fit-content;
-}
-
-button:hover,
-button:focus-visible {
-  background: $blue-900;
 }
 
 a:focus-visible,
