@@ -23,13 +23,6 @@
         "bundle": true,
         "main": "apps/policyquote-api/src/main.ts",
         "tsConfig": "apps/policyquote-api/tsconfig.app.json",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "apps/policyquote-api/src/assets",
-            "output": "assets"
-          }
-        ],
         "esbuildOptions": {
           "sourcemap": true,
           "outExtension": {

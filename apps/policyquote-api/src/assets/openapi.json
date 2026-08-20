@@ -135,10 +135,14 @@
       },
       "QuoteResponse": {
         "type": "object",
-        "required": ["customerName", "annualPremium", "riskScore", "appliedFactors"],
+        "required": ["customerName", "kbVersion", "annualPremium", "riskScore", "appliedFactors"],
         "properties": {
           "customerName": {
             "type": "string"
+          },
+          "kbVersion": {
+            "type": "string",
+            "example": "1.0.0"
           },
           "annualPremium": {
             "type": "number",

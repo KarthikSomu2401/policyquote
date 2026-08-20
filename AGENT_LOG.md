@@ -1753,3 +1753,48 @@ Make the repository documentation reflect the completed application and provide 
 ### Notes
 
 The standard local setup uses `npm install` because the current lockfile mismatch prevents a clean `npm ci`. No application source files were modified.
+
+## 2026-08-20 08:48:53 UTC — Load KB from AppConfig
+
+### Prompt given
+
+> Refactor the PolicyQuote Knowledge Base loading so risk-kb.json is no longer bundled with the Lambda. Keep a local risk-kb.json fallback for local Nx, Docker and SAM development. In production, load the active KB from AWS AppConfig through the AppConfig Agent Lambda extension at localhost:2772, using configuration paths and environment variables rather than hardcoded AWS identifiers. Validate all loaded KB data with the existing Zod schema, cache safely with a short refresh interval, retain the last valid KB if refresh fails, and expose the active KB version through GET /health and quote responses. Add unit tests for local fallback, valid AppConfig content, invalid remote content and failed refresh. Add deployment/configuration documentation. Do not change risk scoring logic
+
+### Output received
+
+Replaced synchronous bundled-file loading with an asynchronous cached loader. Local Nx, Docker, and SAM use validated fallback files; the normal API build omits the KB asset, while `sam-build` preserves it for local SAM. Production AppConfig loading uses the AppConfig Agent URL and application, environment, and configuration path environment variables. Validated KBs are cached for a configurable short interval, concurrent refreshes are coalesced, and the last valid KB is retained after refresh failures. Added active `kbVersion` to quote responses and updated OpenAPI and deployment documentation.
+
+### What changed
+
+- `apps/policyquote-api/src/kb-loader.ts`: added local/AppConfig source selection, Zod validation, refresh caching, concurrent refresh coalescing, and last-known-good retention.
+- `apps/policyquote-api/src/kb-loader.spec.ts`: added local fallback, valid remote, invalid remote, and failed-refresh tests.
+- `apps/policyquote-api/src/app.ts`: made KB-dependent endpoints async and shared the active KB for quote calculation.
+- `apps/policyquote-api/src/service/quote.service.ts`: accepted the active KB and returned `kbVersion` without changing scoring calculations.
+- `apps/policyquote-api/src/service/quote.service.spec.ts`: updated tests for async quote creation.
+- `apps/policyquote-api/src/api.contract.spec.ts`: asserted quote response KB version.
+- `apps/policyquote-api/src/assets/openapi.json`: documented `kbVersion` in quote responses.
+- `apps/policyquote-api/project.json`: removed the KB asset from the normal API build while retaining SAM asset packaging.
+- `apps/policyquote-api/Dockerfile`: copied the source fallback to the local container runtime path.
+- `apps/policyquote-api/eslint.config.mjs`: excluded generated SAM bundle output from source linting.
+- `template.yaml`: configured SAM local to use the local KB fallback.
+- `README.md`: documented AppConfig variables, fallback modes, refresh behavior, and deployment commands.
+- `SOLUTION.md`: documented the KB loading architecture and active-version behavior.
+- `AGENT_LOG.md`: appended this entry.
+
+### Why
+
+Keep production KB configuration outside the Lambda package while preserving deterministic local development and safe runtime behavior when AppConfig refreshes fail.
+
+### Validation
+
+- Focused loader test passed: 4 tests.
+- `npx nx test policyquote-api --runInBand` passed: 4 suites, 20 tests.
+- `npx nx typecheck policyquote-api` passed.
+- `npx nx lint policyquote-api` passed after excluding generated `sam-dist` output.
+- `npx nx build policyquote-api --skipNxCache` passed and confirmed the normal build excludes `risk-kb.json`.
+- `npx nx run policyquote-api:sam-build --skipNxCache` passed and confirmed `sam-dist/assets/risk-kb.json` exists.
+- `git diff --check` passed.
+
+### Notes
+
+Docker image execution was not rerun; the prior repository lockfile mismatch still blocks the Dockerfile's `npm ci` step. Risk scoring logic was preserved.

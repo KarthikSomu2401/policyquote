@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import openApiDocument from './assets/openapi.json';
-import { loadKnowledgeBase } from './kb-loader';
+import { knowledgeBaseLoader } from './kb-loader';
 import { quoteRequestSchema } from './schema/validation/quote-request.schema';
 import { createQuote } from './service/quote.service';
 
@@ -13,8 +13,8 @@ export function createApp() {
   app.use(express.json());
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
-  app.get('/health', (_request, response) => {
-    const knowledgeBase = loadKnowledgeBase();
+  app.get('/health', async (_request, response) => {
+    const knowledgeBase = await knowledgeBaseLoader.load();
 
     response.json({
       status: 'ok',
@@ -22,7 +22,7 @@ export function createApp() {
     });
   });
 
-  app.post('/policy/quote', (request, response) => {
+  app.post('/policy/quote', async (request, response) => {
     const result = quoteRequestSchema.safeParse(request.body);
 
     if (!result.success) {
@@ -31,7 +31,8 @@ export function createApp() {
       });
     }
 
-    return response.status(200).json(createQuote(result.data));
+    const knowledgeBase = await knowledgeBaseLoader.load();
+    return response.status(200).json(await createQuote(result.data, knowledgeBase));
   });
 
   return app;

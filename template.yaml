@@ -11,6 +11,9 @@ Resources:
       Runtime: nodejs20.x
       Timeout: 10
       MemorySize: 256
+      Environment:
+        Variables:
+          POLICYQUOTE_KB_SOURCE: local
       Events:
         Api:
           Type: Api

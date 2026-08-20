@@ -42,7 +42,7 @@ npx nx serve policyquote-api
 npx nx serve policyquote-web
 ```
 
-The Angular frontend runs at <http://localhost:4200> and calls the API at <http://localhost:3000>. The API serves:
+The Angular frontend runs at <http://localhost:4200> and calls the API at <http://localhost:3000>. Local Nx development uses the file fallback. The API serves:
 
 - Health check: <http://localhost:3000/health>
 - Swagger UI: <http://localhost:3000/api-docs>
@@ -63,7 +63,7 @@ The API validates quote requests and returns `400` for invalid input. Its local 
 
 ## AWS SAM local
 
-The SAM template is [template.yaml](template.yaml). The Nx SAM targets build the Lambda-compatible handler before invoking it:
+The SAM template is [template.yaml](template.yaml). SAM local is configured with `POLICYQUOTE_KB_SOURCE=local`, so it uses the checked-in fallback file. The Nx SAM targets build the Lambda-compatible handler before invoking it:
 
 ```sh
 npx nx run policyquote-api:sam-build
@@ -73,22 +73,38 @@ npx nx run policyquote-api:sam-start-api
 
 `sam-invoke` uses [apps/policyquote-api/events/quote.json](apps/policyquote-api/events/quote.json). `sam-start-api` exposes the local API on the SAM default URL, normally <http://127.0.0.1:3000>.
 
+For a production Lambda deployment, configure the AppConfig Agent Lambda extension and set these environment variables on the function:
+
+| Variable | Purpose |
+| --- | --- |
+| `POLICYQUOTE_KB_SOURCE=appconfig` | Selects AppConfig instead of the local file. Production defaults to this source when unset. |
+| `APPCONFIG_AGENT_URL` | AppConfig Agent base URL; defaults to `http://localhost:2772`. |
+| `APPCONFIG_APPLICATION` | AppConfig application identifier. |
+| `APPCONFIG_ENVIRONMENT` | AppConfig environment identifier. |
+| `APPCONFIG_CONFIGURATION` | AppConfig configuration/profile identifier. |
+| `POLICYQUOTE_KB_REFRESH_INTERVAL_MS` | Optional refresh interval; defaults to 30,000 ms. |
+| `POLICYQUOTE_KB_PATH` | Optional local fallback path override. |
+
+The loader requests `/appconfig/applications/{application}/environments/{environment}/configurations/{configuration}` from the Agent. It validates every response with the existing Zod schema, caches a valid KB for the refresh interval, and continues serving the last valid KB if a later refresh fails. A failed initial remote load is surfaced rather than silently using a local file.
+
 ## Docker
 
 An API image definition is available at [apps/policyquote-api/Dockerfile](apps/policyquote-api/Dockerfile):
 
 ```sh
 docker build -f apps/policyquote-api/Dockerfile -t policyquote-api .
-docker run --rm -p 3000:3000 policyquote-api
+docker run --rm -e POLICYQUOTE_KB_SOURCE=local -p 3000:3000 policyquote-api
 ```
 
 The container exposes port `3000`, with Swagger at `/api-docs` and the quote endpoint at `/policy/quote`. The current Dockerfile runs `npm ci`; at this checkout the lockfile is not synchronized with `package.json`, so the image build requires the lockfile to be synchronized first. The failed build reports missing `yaml@2.9.0` and `@swc/helpers@0.5.23` entries.
 
 ## Risk knowledge base
 
-The source knowledge base is [apps/policyquote-api/src/assets/risk-kb.json](apps/policyquote-api/src/assets/risk-kb.json). The API loads it from its bundled `assets/risk-kb.json` at runtime. SAM and generated build outputs also contain copies under `apps/policyquote-api/sam-dist/assets/` or the active build output directory.
+The local fallback knowledge base is [apps/policyquote-api/src/assets/risk-kb.json](apps/policyquote-api/src/assets/risk-kb.json). Local Nx development reads this source file; Docker reads `/app/risk-kb.json`; and SAM local retains a copy in `apps/policyquote-api/sam-dist/assets/`. The normal Lambda build does not include this file, so production uses AppConfig through the Agent extension.
 
-Edit the source JSON to configure risk bands, risk factors, conditions, and pricing inputs. The knowledge-base schema validates the file when the API starts or handles a health/quote request. Rebuild the API, SAM output, or Docker image after changing it; there is no runtime environment-variable override for this file.
+Edit the source JSON to configure local risk bands, risk factors, conditions, and pricing inputs. The knowledge-base schema validates the file before use. Rebuild the SAM output or Docker image after changing it; production configuration is managed in AppConfig rather than this bundled fallback.
+
+Both `GET /health` and `POST /policy/quote` expose the active `kbVersion`, making the configuration used for a response observable.
 
 ## Frontend tests
 

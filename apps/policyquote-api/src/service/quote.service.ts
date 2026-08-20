@@ -1,11 +1,15 @@
 import { loadKnowledgeBase } from '../kb-loader';
+import type { KnowledgeBase } from '../schema/types/knowledgebase';
 import type { QuoteInput } from '../schema/types/quote-request';
 import { matchesCondition } from '../engine/risk-evaluator';
 
-export function createQuote(input: QuoteInput) {
-  const knowledgeBase = loadKnowledgeBase();
+export async function createQuote(
+  input: QuoteInput,
+  knowledgeBase?: KnowledgeBase,
+) {
+  const activeKnowledgeBase = knowledgeBase ?? await loadKnowledgeBase();
 
-  const appliedFactors = knowledgeBase.factors.filter((factor) =>
+  const appliedFactors = activeKnowledgeBase.factors.filter((factor) =>
     matchesCondition(input, factor.condition),
   );
 
@@ -14,17 +18,18 @@ export function createQuote(input: QuoteInput) {
     0,
   );
 
-  const riskBand = Object.values(knowledgeBase.riskBands).find(
+  const riskBand = Object.values(activeKnowledgeBase.riskBands).find(
     (band) => riskScore >= band.min && riskScore <= band.max,
   );
 
   const annualPremium =
-    knowledgeBase.basePremium *
-    knowledgeBase.coverageLoadFactor *
+    activeKnowledgeBase.basePremium *
+    activeKnowledgeBase.coverageLoadFactor *
     (riskBand?.multiplier ?? 1);
 
   return {
     customerName: input.customerName,
+    kbVersion: activeKnowledgeBase.version,
     annualPremium: Number(annualPremium.toFixed(2)),
     riskScore,
     appliedFactors,

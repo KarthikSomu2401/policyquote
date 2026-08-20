@@ -8,7 +8,9 @@ PolicyQuote is an Nx workspace with three application projects:
 
 The browser flow collects customer and property details, sends `POST /policy/quote`, and displays the premium, risk score, risk band, and applied factors. The E2E suite mocks that endpoint so browser tests are deterministic and independent of the backend process.
 
-Risk configuration lives in `apps/policyquote-api/src/assets/risk-kb.json`. The API validates and loads that JSON from the bundled `assets/risk-kb.json`; rebuild API, SAM, or Docker outputs after editing it.
+Risk configuration has two paths. Local Nx, Docker, and SAM development use the validated fallback at `apps/policyquote-api/src/assets/risk-kb.json`. The normal Lambda build does not bundle that file; production loads the active configuration from the AWS AppConfig Agent extension at `localhost:2772` using `APPCONFIG_AGENT_URL`, `APPCONFIG_APPLICATION`, `APPCONFIG_ENVIRONMENT`, and `APPCONFIG_CONFIGURATION`.
+
+The loader caches a validated KB for a short configurable interval (`POLICYQUOTE_KB_REFRESH_INTERVAL_MS`, default 30 seconds), coalesces concurrent refreshes, and keeps the last valid KB when a refresh fails. Initial remote-load failures are returned to the caller. `GET /health` and quote responses expose `kbVersion`.
 
 Primary local paths:
 

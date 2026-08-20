@@ -16,7 +16,7 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 COPY --from=build /workspace/dist/apps/policyquote-api ./
-COPY --from=build /workspace/apps/policyquote-api/risk-kb.json ./risk-kb.json
+COPY apps/policyquote-api/src/assets/risk-kb.json ./risk-kb.json
 
 USER node
 

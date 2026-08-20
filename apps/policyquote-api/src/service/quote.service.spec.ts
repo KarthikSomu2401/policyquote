@@ -11,33 +11,33 @@ const customer_quote: QuoteInput = {
 };
 
 describe('createQuote', () => {
-  it('creates a base quote', () => {
-    const quote = createQuote(customer_quote);
+  it('creates a base quote', async () => {
+    const quote = await createQuote(customer_quote);
     expect(quote.annualPremium).toBe(360);
   });
 
-  it('adds points for a young customer', () => {
-    const quote = createQuote({ ...customer_quote, age: 20 });
+  it('adds points for a young customer', async () => {
+    const quote = await createQuote({ ...customer_quote, age: 20 });
     expect(quote.riskScore).toBe(20);
     expect(quote.appliedFactors[0].id).toBe('age_young_elderly');
   });
 
-  it('applies the STANDARD risk-band multiplier', () => {
-    const quote = createQuote(customer_quote);
+  it('applies the STANDARD risk-band multiplier', async () => {
+    const quote = await createQuote(customer_quote);
 
     expect(quote.riskScore).toBe(0);
     expect(quote.annualPremium).toBe(360);
   });
 
-  it('applies the ELEVATED risk-band multiplier', () => {
-    const quote = createQuote({ ...customer_quote, previousClaims: 3 });
+  it('applies the ELEVATED risk-band multiplier', async () => {
+    const quote = await createQuote({ ...customer_quote, previousClaims: 3 });
 
     expect(quote.riskScore).toBe(30);
     expect(quote.annualPremium).toBe(540);
   });
 
-  it('applies the HIGH_RISK risk-band multiplier', () => {
-    const quote = createQuote({
+  it('applies the HIGH_RISK risk-band multiplier', async () => {
+    const quote = await createQuote({
       ...customer_quote,
       age: 80,
       previousClaims: 3,
@@ -48,8 +48,8 @@ describe('createQuote', () => {
     expect(quote.annualPremium).toBe(792);
   });
 
-  it('applies a new postcode factor from KB data', () => {
-    const quote = createQuote({ ...customer_quote, postcode: 'EX1 2AB' });
+  it('applies a new postcode factor from KB data', async () => {
+    const quote = await createQuote({ ...customer_quote, postcode: 'EX1 2AB' });
 
     expect(quote.riskScore).toBe(15);
     expect(quote.appliedFactors).toEqual([

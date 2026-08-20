@@ -61,6 +61,7 @@ describe('policyquote API contract', () => {
     const response = await invoke(
       request('POST', '/policy/quote', {
         customerName: 'Karthik',
+        kbVersion: '1.0.0',
         propertyValue: 800000,
         age: 80,
         propertyType: 'House',
